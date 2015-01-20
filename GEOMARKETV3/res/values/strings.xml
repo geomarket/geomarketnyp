@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+	
+    <string-array name="imguploadchoice">
+        <item>Gallery</item>
+        <item>Camera</item>
+    </string-array>
+    
     <string name="app_name">GEOMARKETV3</string>
     <string name="action_settings">Settings</string>
     <string name="action_next">Next</string>
@@ -63,5 +68,6 @@
     <string name="title_activity_register_user">RegisterUser</string>
     <string name="title_activity_register_user2">RegisterUser2</string>
     <string name="title_activity_create_product">CreateProductActivity</string>
-
+	
+    
 </resources>

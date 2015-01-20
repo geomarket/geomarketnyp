@@ -2,6 +2,7 @@ package com.example.geomarketv3_uilogic;
 
 import java.util.ArrayList;
 
+import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.example.geomarketv3.R;
 
 import com.example.geomarketv3.R.layout;
@@ -15,16 +16,21 @@ import com.geomarketv3.validation.validator.PhoneValidator;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 
 public class RegisterUser2 extends Activity {
 	private EditText titleET, nameET, contactET, companyET;
+	private BootstrapButton uploadbtn;
 	private String role;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +44,37 @@ public class RegisterUser2 extends Activity {
 		nameET = (EditText) findViewById(R.id.nameET);
 		contactET = (EditText) findViewById(R.id.contactET);
 		companyET = (EditText) findViewById(R.id.companyET);
+		uploadbtn = (BootstrapButton) findViewById(R.id.uploadBtn);
+		uploadbtn.setOnClickListener(new OnClickListener(){
+
+			@Override
+			public void onClick(View view) {
+				// TODO Auto-generated method stub
+				AlertDialog.Builder builder = new AlertDialog.Builder(RegisterUser2.this);
+				builder.setTitle("Image upload choice");
+				builder.setItems(R.array.imguploadchoice, new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
+						switch(which){
+						case 0:
+							Intent galleryPicker = new Intent(
+									Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+									 
+									startActivityForResult(galleryPicker, 0);
+							break;
+						case 1:
+							Intent cameraPicker = new Intent("android.media.action.IMAGE_CAPTURE");
+							startActivityForResult(cameraPicker, 0);
+							break;
+						}
+					}
+				}).create().show();
+				
+			}
+			
+		});
 	}
 
 	@Override
