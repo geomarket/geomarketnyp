@@ -1,0 +1,142 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bootstrapbutton="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    
+    <RelativeLayout
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+    	android:id="@+id/rlView">
+    
+    <ScrollView
+    	android:id="@+id/scroll"
+    	android:layout_width="fill_parent"
+    	android:layout_height="400dp">
+    	
+	<LinearLayout
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+    	android:orientation="vertical"
+    	android:id="@+id/llviewoffer">
+    
+    	 <RelativeLayout
+         	android:layout_width="fill_parent"
+        	android:layout_height="200dp"
+        	android:id="@+id/rlIM">
+        
+       		<ImageView
+		        android:id="@+id/imgIV"
+		        android:layout_width="fill_parent"
+		        android:layout_height="200dp"
+		        android:scaleType="fitCenter"
+		        android:contentDescription="Image" />
+     	</RelativeLayout>
+         
+         
+         
+    <RelativeLayout
+        android:id="@+id/rlPersonal" 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+    	android:paddingRight="@dimen/activity_horizontal_margin">
+ 
+    
+    <TextView
+        android:id="@+id/titleTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="32sp"
+        android:text="Title:" />
+   
+    <TextView
+        android:id="@+id/sloganTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/titleTV"
+        android:paddingTop="5dp"
+        android:paddingBottom="10dp"
+        android:textSize="20sp"
+        android:text="slogan" />
+    </RelativeLayout>
+    	
+    
+	    <RelativeLayout
+	        android:id="@+id/rlG"
+	        android:layout_marginTop="5dp"  
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:paddingLeft="@dimen/activity_horizontal_margin"
+	    	android:paddingRight="@dimen/activity_horizontal_margin">
+		<TextView
+	        android:id="@+id/salePersonTV"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:paddingTop="3dp"
+	       	android:textStyle="bold"
+	        android:text="Sale Person detail:" />
+	         <View
+		    android:id="@+id/view1"
+	    android:layout_width="fill_parent"
+	    android:layout_height="1dp"
+	    android:layout_below="@+id/salePersonTV"
+	    android:background="@android:color/darker_gray"/>
+	         
+		<TextView
+	        android:id="@+id/nameTV"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:paddingTop="5dp"
+	        android:layout_below="@+id/view1"
+	       android:drawableLeft="@drawable/dot"
+	         />
+	        
+	    <TextView
+	        android:id="@+id/emailTV"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:paddingTop="5dp"
+	        android:layout_below="@+id/nameTV"
+	        android:drawableLeft="@drawable/dot"/>
+	    
+	    <TextView
+	        android:id="@+id/contactTV"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:paddingTop="5dp"
+	        android:paddingBottom="5dp"
+	        android:layout_below="@+id/emailTV"
+	        android:drawableLeft="@drawable/dot" />
+	    
+	        <com.beardedhen.androidbootstrap.BootstrapButton
+	          		 android:id="@+id/GoBtn"
+	                android:layout_width="fill_parent"
+	                android:layout_height="fill_parent"
+	                android:paddingLeft="@dimen/activity_horizontal_margin"
+	    			android:paddingRight="@dimen/activity_horizontal_margin"
+	    			android:paddingTop="@dimen/activity_horizontal_margin"
+	    			android:paddingBottom="@dimen/activity_horizontal_margin"
+	                android:text="Get There!!"
+	                android:layout_below="@+id/contactTV"
+	                bootstrapbutton:bb_icon_left="fa-sign-in"
+	                bootstrapbutton:bb_roundedCorners="true"
+	                bootstrapbutton:bb_type="primary" />
+	    </RelativeLayout>
+	</LinearLayout>
+	</ScrollView>
+	
+    </RelativeLayout>
+	<FrameLayout 
+	    android:layout_below="@+id/rlView"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:id="@+id/saleMemberFragment" >
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.MapFragment"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        />
+	</FrameLayout>
+</RelativeLayout>
