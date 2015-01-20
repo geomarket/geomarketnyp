@@ -93,6 +93,8 @@ LocationListener{
 		fl = (FrameLayout) findViewById(R.id.saleMemberFragment);
 		rl = (RelativeLayout) findViewById(R.id.rlView);
 		rl.setVisibility(View.GONE);
+		
+		
 		user = new User();
 		//rl.getLayoutParams().height = 800;
 		imgIV= (ImageView) findViewById(R.id.imgIV);
