@@ -1,7 +1,10 @@
 package com.example.geomarketv3_uilogic;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import com.beardedhen.androidbootstrap.BootstrapButton;
@@ -16,9 +19,11 @@ import com.geomarketv3.validation.validator.NotEmptyValidator;
 import com.geomarketv3.validation.validator.NumericValidator;
 import com.geomarketv3.validation.validator.PhoneValidator;
 
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.provider.MediaStore.Images;
 import android.provider.MediaStore.Images.Media;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -29,13 +34,16 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import android.widget.RelativeLayout;
 
 public class RegisterUser2 extends Activity {
@@ -130,6 +138,7 @@ public class RegisterUser2 extends Activity {
 				Registeruservalidator2 registeruser2controller = new Registeruservalidator2(RegisterUser2.this);
 				registeruser2controller.validateForm(intent, mForm, validList);
 				break;
+			
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -138,7 +147,7 @@ public class RegisterUser2 extends Activity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO Auto-generated method stub
-		if(requestCode == 0){
+		if(requestCode == 0 && resultCode == RESULT_OK){
 			Uri mImageUri = data.getData();
 			
 			try {
@@ -154,8 +163,12 @@ public class RegisterUser2 extends Activity {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}else if(requestCode == 1){
-			System.out.println(data.getStringExtra("dat"));
+		}else if(requestCode == 1 && resultCode == RESULT_OK){
+			Bitmap photo = (Bitmap) data.getExtras().get("data");
+			imgView.setImageBitmap(photo);
+			imgView.setVisibility(View.VISIBLE);
+			Uri mImageUri = getImageUri(RegisterUser2.this,photo);
+			uriOfImage = getRealPathFromURI(mImageUri);
 		}
 		
 	}
@@ -271,5 +284,47 @@ public class RegisterUser2 extends Activity {
 		}
 
 		return inSampleSize;
+	}
+	
+	public int getCameraPhotoOrientation(Context context, Uri imageUri,
+			String imagePath) {
+		int rotate = 0;
+		try {
+			context.getContentResolver().notifyChange(imageUri, null);
+			File imageFile = new File(imagePath);
+
+			ExifInterface exif = new ExifInterface(imageFile.getAbsolutePath());
+			int orientation = exif.getAttributeInt(
+					ExifInterface.TAG_ORIENTATION,
+					ExifInterface.ORIENTATION_NORMAL);
+
+			switch (orientation) {
+			case ExifInterface.ORIENTATION_ROTATE_270:
+				rotate = 270;
+				break;
+			case ExifInterface.ORIENTATION_ROTATE_180:
+				rotate = 180;
+				break;
+			case ExifInterface.ORIENTATION_ROTATE_90:
+				rotate = 90;
+				break;
+			default:
+				rotate = 0;
+				break;
+			}
+
+			Log.i("RotateImage", "Exif orientation: " + orientation);
+			Log.i("RotateImage", "Rotate value: " + rotate);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return rotate;
+	}
+	
+	public Uri getImageUri(Context inContext, Bitmap inImage) {
+	    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+	    inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+	    String path = Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+	    return Uri.parse(path);
 	}
 }
