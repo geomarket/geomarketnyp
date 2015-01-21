@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 import com.beardedhen.androidbootstrap.BootstrapButton;
+import com.beardedhen.androidbootstrap.BootstrapThumbnail;
 import com.example.geomarketv3.R;
 
 import com.example.geomarketv3.R.layout;
@@ -67,7 +68,7 @@ public class RegisterUser2 extends Activity {
 		contactET = (EditText) findViewById(R.id.contactET);
 		companyET = (EditText) findViewById(R.id.companyET);
 		uploadbtn = (BootstrapButton) findViewById(R.id.uploadBtn);
-		imgView = (ImageView) findViewById(R.id.imageView);
+		imgView =   (ImageView) findViewById(R.id.imageView);
 		imgView.setVisibility(View.GONE);
 		role = "sales";
 		uploadbtn.setOnClickListener(new OnClickListener(){
@@ -170,6 +171,11 @@ public class RegisterUser2 extends Activity {
 			Uri mImageUri = getImageUri(RegisterUser2.this,photo);
 			uriOfImage = getRealPathFromURI(mImageUri);
 		}
+		
+	}
+
+	private void setImageBitmap(Bitmap image2) {
+		// TODO Auto-generated method stub
 		
 	}
 

@@ -10,7 +10,7 @@
     <string name="action_settings">Settings</string>
     <string name="action_next">Next</string>
     <string name="action_register">Register</string>
-    <string name="action_removemarker">Remove Marker</string>
+    <string name="action_addproduct">Add new Product</string>
     <string name="hello_world">Hello world!</string>
 
     <color name="abs__background_holo_dark">#ff000000</color>

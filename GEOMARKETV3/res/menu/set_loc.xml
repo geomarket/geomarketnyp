@@ -7,11 +7,11 @@
 	    android:showAsAction="always"
       	android:actionViewClass="android.widget.SearchView"
 	    />
-    
+
     <item
-        android:id="@+id/action_removemarker"
+        android:id="@+id/action_addproduct"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:title="@string/action_removemarker"/>
+        android:title="@string/action_addproduct"/>
 
 </menu>

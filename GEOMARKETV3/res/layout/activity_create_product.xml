@@ -19,7 +19,6 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:hint="Enter your title"
-            android:layout_below="@+id/textView1"
             bootstrapbutton:be_roundedCorners="true"
             android:layout_centerHorizontal="true"/>
     
@@ -31,7 +30,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:hint="Enter the price"
-            android:layout_below="@+id/textView1"
+            android:layout_below="@+id/titleET"
             bootstrapbutton:be_roundedCorners="true"
             android:layout_centerHorizontal="true"/>
     
@@ -47,6 +46,15 @@
             bootstrapbutton:be_roundedCorners="true"
             android:layout_centerHorizontal="true"/>
     
+   <ImageView 
+			android:id="@+id/imageView"
+			android:layout_below="@+id/DescET"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="5dp"
+			android:layout_marginLeft="10dp"
+			android:layout_marginRight="10dp"/> 
+    
     <com.beardedhen.androidbootstrap.BootstrapButton
           		 android:id="@+id/uploadBtn"
                 android:layout_width="wrap_content"
@@ -58,6 +66,7 @@
                 bootstrapbutton:bb_icon_left="fa-sign-in"
                 bootstrapbutton:bb_roundedCorners="true"
                 bootstrapbutton:bb_type="primary" />
+    
 
 </RelativeLayout>
 </ScrollView>

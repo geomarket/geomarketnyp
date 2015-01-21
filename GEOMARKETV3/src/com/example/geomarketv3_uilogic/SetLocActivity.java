@@ -410,6 +410,18 @@ LocationListener {
 		return null;
 	}
 
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		switch(item.getItemId()){
+		case R.id.action_addproduct:
+			Intent addproductIntent = new Intent(SetLocActivity.this, CreateProductActivity.class);
+			startActivity(addproductIntent);
+			break;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
 	
 
 }

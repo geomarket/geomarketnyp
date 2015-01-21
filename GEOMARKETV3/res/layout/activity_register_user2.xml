@@ -81,6 +81,8 @@
 			android:layout_marginLeft="10dp"
 			android:layout_marginRight="10dp"/> 
 			
+     
+			
     <com.beardedhen.androidbootstrap.BootstrapButton
           		 android:id="@+id/uploadBtn"
                 android:layout_width="wrap_content"
