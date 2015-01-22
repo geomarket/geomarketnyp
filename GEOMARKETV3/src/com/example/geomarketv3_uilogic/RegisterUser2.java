@@ -77,7 +77,7 @@ public class RegisterUser2 extends Activity {
 			public void onClick(View view) {
 				// TODO Auto-generated method stub
 				AlertDialog.Builder builder = new AlertDialog.Builder(RegisterUser2.this);
-				builder.setTitle("Image upload choice");
+				builder.setTitle("How do you wish to upload your Image?");
 				builder.setItems(R.array.imguploadchoice, new DialogInterface.OnClickListener() {
 					
 					@Override
