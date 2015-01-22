@@ -69,7 +69,7 @@ public class Register_User extends AsyncTask<Object, Object, Object>{
 								createuserref.updateChildren(createUser);
 								
 
-									UploadImage uploadimg = new UploadImage(activity, user);
+									UploadImage uploadimg = new UploadImage(activity, user.getImgURL(), user.getId(), 0);
 									uploadimg.execute();
 							}
 						});

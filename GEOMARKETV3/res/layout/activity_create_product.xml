@@ -12,7 +12,7 @@
     android:paddingTop="@dimen/activity_vertical_margin" >
 
     <com.beardedhen.androidbootstrap.BootstrapEditText
-            android:id="@+id/titleET"
+            android:id="@+id/nameET"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginTop="45dp"
@@ -30,7 +30,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:hint="Enter the price"
-            android:layout_below="@+id/titleET"
+            android:layout_below="@+id/nameET"
             bootstrapbutton:be_roundedCorners="true"
             android:layout_centerHorizontal="true"/>
     

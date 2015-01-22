@@ -3,11 +3,17 @@ package com.example.geomarketv3_uilogic;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.example.geomarketv3.R;
 import com.example.geomarketv3.R.layout;
 import com.example.geomarketv3.R.menu;
+import com.geomarketv3.validate_controller.CreateProductvalidatior;
+import com.geomarketv3.validation.Form;
+import com.geomarketv3.validation.Validate;
+import com.geomarketv3.validation.validator.NotEmptyValidator;
+import com.geomarketv3.validation.validator.NumericValidator;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,6 +32,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 public class CreateProductActivity extends Activity {
@@ -34,11 +41,19 @@ public class CreateProductActivity extends Activity {
 	private ImageView imgView;
 	private Bitmap Image = null;
 	private String uriOfImage = null;
+	private EditText nameET, priceET, DescET;
+	private String userid;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_create_product);
 		imgView = (ImageView) findViewById(R.id.imageView);
+		nameET = (EditText) findViewById(R.id.nameET);
+		priceET = (EditText) findViewById(R.id.priceET);
+		DescET = (EditText) findViewById(R.id.DescET);
+		
+		userid = getIntent().getStringExtra("userid");
+		System.out.println("id 1 " + userid);
 		uploadBTN = (BootstrapButton) findViewById(R.id.uploadBtn);
 		uploadBTN.setOnClickListener(new OnClickListener(){
 
@@ -70,18 +85,58 @@ public class CreateProductActivity extends Activity {
 					});
 	}
 
+	public String getUserid() {
+		return userid;
+	}
+
+	public void setUserid(String userid) {
+		this.userid = userid;
+	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.create_product, menu);
 		return true;
 	}
+	
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		switch(item.getItemId()){
+		case R.id.action_addproduct:
+			
+			Intent intent = new Intent();
+			Form mForm = new Form();
+			Validate validName = new Validate(nameET);
+			Validate validPrice = new Validate(priceET);
+			Validate validDesc = new Validate(DescET);
+			
+			validName.addValidator(new NotEmptyValidator(CreateProductActivity.this));
+			validPrice.addValidator(new NumericValidator(CreateProductActivity.this));
+			validDesc.addValidator(new NotEmptyValidator(CreateProductActivity.this));
+			
+			mForm.addValidates(validName);
+			mForm.addValidates(validDesc);
+			mForm.addValidates(validPrice);
+			ArrayList<Validate> validList = new ArrayList<Validate>();
+			validList.add(validName);
+			validList.add(validPrice);
+			validList.add(validDesc);
+			CreateProductvalidatior  create = new CreateProductvalidatior(CreateProductActivity.this);
+			create.validateForm(intent, mForm, validList);
+			
+			break;
+		}
+		return super.onOptionsItemSelected(item);
+	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO Auto-generated method stub
 		if(requestCode == 0 && resultCode == RESULT_OK){
-Uri mImageUri = data.getData();
+				Uri mImageUri = data.getData();
 			
 			try {
 				Image = Media.getBitmap(this.getContentResolver(), mImageUri);
@@ -169,5 +224,65 @@ Uri mImageUri = data.getData();
 	    String path = Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
 	    return Uri.parse(path);
 	}
+
+	public Uri getSelectedImage() {
+		return selectedImage;
+	}
+
+	public void setSelectedImage(Uri selectedImage) {
+		this.selectedImage = selectedImage;
+	}
+
+	public ImageView getImgView() {
+		return imgView;
+	}
+
+	public void setImgView(ImageView imgView) {
+		this.imgView = imgView;
+	}
+
+	public Bitmap getImage() {
+		return Image;
+	}
+
+	public void setImage(Bitmap image) {
+		Image = image;
+	}
+
+	public String getUriOfImage() {
+		return uriOfImage;
+	}
+
+	public void setUriOfImage(String uriOfImage) {
+		this.uriOfImage = uriOfImage;
+	}
+
+	
+
+	public EditText getNameET() {
+		return nameET;
+	}
+
+	public void setNameET(EditText nameET) {
+		this.nameET = nameET;
+	}
+
+	public EditText getPriceET() {
+		return priceET;
+	}
+
+	public void setPriceET(EditText priceET) {
+		this.priceET = priceET;
+	}
+
+	public EditText getDescET() {
+		return DescET;
+	}
+
+	public void setDescET(EditText descET) {
+		DescET = descET;
+	}
+	
+	
 	
 }

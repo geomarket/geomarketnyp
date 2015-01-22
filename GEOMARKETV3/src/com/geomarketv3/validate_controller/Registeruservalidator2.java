@@ -28,11 +28,7 @@ import com.geomarketv3.validation.Validate;
 
 public class Registeruservalidator2 {
 	private RegisterUser2 activity;
-	private ProgressDialog dialog;
-	private Firebase ref;
-	private String id;
 	private User user;
-	private Cloudinary cloudinary;
 	
 	public Registeruservalidator2(RegisterUser2 activity) {
 		this.activity = activity;

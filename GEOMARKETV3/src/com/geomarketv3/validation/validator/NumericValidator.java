@@ -13,7 +13,7 @@ public class NumericValidator extends AbstractValidator {
 	/**
 	 * Default message if none specified
 	 */
-	private static final int DEFAULT_ERROR_MESSAGE_RESOURCE = R.string.validator_ip;
+	private static final int DEFAULT_ERROR_MESSAGE_RESOURCE = R.string.validator_num;
 
 	public NumericValidator(Context c) {
 		super(c, DEFAULT_ERROR_MESSAGE_RESOURCE);

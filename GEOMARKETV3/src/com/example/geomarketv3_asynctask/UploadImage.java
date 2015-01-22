@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.cloudinary.Cloudinary;
 import com.example.geomarketv3_uilogic.Login;
+import com.example.geomarketv3_uilogic.SetLocActivity;
 import com.geomarketv3.entity.User;
 
 import android.app.Activity;
@@ -16,25 +17,35 @@ import android.os.AsyncTask;
 public class UploadImage extends AsyncTask<Void, Void, Void>{
 	private Cloudinary cloudinary;
 	private Activity activity;
-	private User user;
+	private String url, id;
+	private int end;
 
 	
-	public UploadImage(Activity activity, User user){
+	public UploadImage(Activity activity, String url,String id, int end){
 		this.activity = activity;
-		this.user = user;
+		this.url = url;
+		this.id = id;
+		this.end = end;
 	}
 	@Override
 	protected Void doInBackground(Void... arg0) {
 		// TODO Auto-generated method stub
-		imageUpload(user.getId(), user.getImgURL());
+		imageUpload(id, url);
 		return null;
 	}
 
 	@Override
 	protected void onPostExecute(Void result) {
-		Intent intent = new Intent(activity, Login.class);
-		activity.startActivity(intent);
-		activity.finish();
+		if(end == 0){
+			Intent intent = new Intent(activity, Login.class);
+			activity.startActivity(intent);
+			activity.finish();
+		}else if(end == 1){
+			Intent intent = new Intent(activity, SetLocActivity.class);
+			intent.putExtra("userid", id);
+			activity.startActivity(intent);
+			activity.finish();
+		}
 	}
 
 	@Override
@@ -52,7 +63,7 @@ private void imageUpload(String id, String path){
 		
 		try {
 
-			Map params = Cloudinary.asMap("public_id", user.getId());
+			Map params = Cloudinary.asMap("public_id", id);
 			cloudinary.uploader().upload(file,params);
 			
 		} catch (IOException e) {

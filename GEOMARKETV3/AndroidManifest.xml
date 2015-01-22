@@ -81,6 +81,10 @@
             android:name="com.example.geomarketv3_uilogic.CreateProductActivity"
             android:label="@string/title_activity_create_product" >
         </activity>
+        <activity
+            android:name="com.example.geomarketv3.ProductList"
+            android:label="@string/title_activity_product_list" >
+        </activity>
     </application>
 
 </manifest>

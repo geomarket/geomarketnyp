@@ -416,6 +416,7 @@ LocationListener {
 		switch(item.getItemId()){
 		case R.id.action_addproduct:
 			Intent addproductIntent = new Intent(SetLocActivity.this, CreateProductActivity.class);
+			addproductIntent.putExtra("userid", userid);
 			startActivity(addproductIntent);
 			break;
 		}
