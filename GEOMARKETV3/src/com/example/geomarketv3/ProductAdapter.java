@@ -19,8 +19,8 @@ import android.widget.TextView;
 public class ProductAdapter extends ArrayAdapter<Product> {
 	private Activity context;
 	private ArrayList<Product> resultArray;
-	public ProductAdapter(Context context, int resource,int textViewResourceId,  ArrayList<Product> resultArray) {
-		super(context, R.layout.activity_product_adapter, textViewResourceId, resultArray);
+	public ProductAdapter(Context context, ArrayList<Product> resultArray) {
+		super(context, R.layout.activity_product_adapter, resultArray);
 		// TODO Auto-generated constructor stub
 		this.context = (Activity) context;
 		this.resultArray = resultArray;
@@ -40,7 +40,7 @@ public class ProductAdapter extends ArrayAdapter<Product> {
 		txtPrice.setText(Double.toString(resultArray.get(position).getPrice()));
 		txtDetail.setText(resultArray.get(position).getDetail());
 		
-		return super.getView(position, convertView, parent);
+		return rowView;
 	}
 
 		
