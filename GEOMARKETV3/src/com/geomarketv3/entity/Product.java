@@ -1,10 +1,12 @@
 package com.geomarketv3.entity;
 
+import android.graphics.Bitmap;
+
 public class Product {
 	private String id, name, detail;
 	private double price;
 	private String imgURL;
-	
+	private String status;
 	public Product(){
 		
 	}
@@ -39,5 +41,15 @@ public class Product {
 	public void setImgURL(String imgURL) {
 		this.imgURL = imgURL;
 	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+
 	
 }

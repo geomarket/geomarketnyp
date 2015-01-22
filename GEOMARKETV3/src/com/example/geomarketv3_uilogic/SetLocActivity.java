@@ -12,6 +12,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.beardedhen.androidbootstrap.BootstrapButton;
+import com.example.geomarketv3.ProductList;
 import com.example.geomarketv3.R;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -418,6 +419,12 @@ LocationListener {
 			Intent addproductIntent = new Intent(SetLocActivity.this, CreateProductActivity.class);
 			addproductIntent.putExtra("userid", userid);
 			startActivity(addproductIntent);
+			break;
+		
+		case R.id.action_viewproduct:
+			Intent ViewProductListIntent = new Intent(SetLocActivity.this, ProductList.class);
+			ViewProductListIntent.putExtra("userid", userid);
+			startActivity(ViewProductListIntent);
 			break;
 		}
 		return super.onOptionsItemSelected(item);

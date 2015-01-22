@@ -11,6 +11,7 @@
     <string name="action_next">Next</string>
     <string name="action_register">Register</string>
     <string name="action_addproduct">Add new Product</string>
+     <string name="action_viewproduct">View Product List</string>
     <string name="hello_world">Hello world!</string>
 
     <color name="abs__background_holo_dark">#ff000000</color>
@@ -70,5 +71,6 @@
     <string name="title_activity_register_user2">RegisterUser2</string>
     <string name="title_activity_create_product">CreateProductActivity</string>
     <string name="title_activity_product_list">ProductList</string>
+    <string name="title_activity_product_adapter">ProductAdapter</string>
 
 </resources>

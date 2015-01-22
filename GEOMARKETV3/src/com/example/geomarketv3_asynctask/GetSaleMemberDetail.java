@@ -40,6 +40,7 @@ public class GetSaleMemberDetail extends AsyncTask<Object, Object, Object>{
 	private String imgurl;
 	private Bitmap image;
 	private String url = "https://mmarketnyp.firebaseio.com/";
+	
 	public GetSaleMemberDetail(FragmentActivity activity, String name){
 		this.activity = activity;
 		this.name = name;

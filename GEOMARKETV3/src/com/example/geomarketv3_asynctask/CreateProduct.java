@@ -33,6 +33,7 @@ public class CreateProduct extends AsyncTask<Object, Object, Object> {
 		productMap.put("name", product.getName());
 		productMap.put("price", Double.toString(product.getPrice()));
 		productMap.put("detail", product.getDetail());
+		productMap.put("status", "active");
 		createProduct.setValue(productMap);
 		
 		System.out.println("key " + createProduct.getKey());
