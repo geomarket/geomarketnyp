@@ -7,6 +7,7 @@ public class Product {
 	private double price;
 	private String imgURL;
 	private String status;
+	private Bitmap image;
 	public Product(){
 		
 	}
@@ -50,6 +51,13 @@ public class Product {
 		this.status = status;
 	}
 
+	public Bitmap getImage() {
+		return image;
+	}
+
+	public void setImage(Bitmap image) {
+		this.image = image;
+	}
 
 	
 }
