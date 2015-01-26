@@ -12,7 +12,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.beardedhen.androidbootstrap.BootstrapButton;
-import com.example.geomarketv3.ProductList;
 import com.example.geomarketv3.R;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -108,7 +107,7 @@ LocationListener {
 						Geocoder geocoder = new Geocoder(SetLocActivity.this, Locale.getDefault()); 
 			        	 try {
 							List<Address> address = geocoder.getFromLocation(Double.parseDouble(updateMap.get("lat").toString()), Double.parseDouble(updateMap.get("lng").toString()), 1);
-							marker = gMap.addMarker(new MarkerOptions().position(new LatLng(address.get(0).getLatitude(), address.get(0).getLongitude())).title(updateMap.get("markertitle").toString()));
+							marker = gMap.addMarker(new MarkerOptions().position(new LatLng(address.get(0).getLatitude(), address.get(0).getLongitude())).title(updateMap.get("markertitle").toString()).snippet(address.get(0).getAddressLine(0) + " " + address.get(0).getAddressLine(1)));
 							marker.showInfoWindow();
 							markerList.add(marker);
 							
@@ -142,7 +141,7 @@ LocationListener {
 				        	 Geocoder geocoder = new Geocoder(SetLocActivity.this, Locale.getDefault()); 
 				        	 try {
 								List<Address> address = geocoder.getFromLocation(setlatlng.latitude, setlatlng.longitude, 1);
-								marker = gMap.addMarker(new MarkerOptions().position(setlatlng).title("marker"+ markerList.size()).snippet(address.get(0).getAddressLine(0) + " " + address.get(0).getAddressLine(1)));
+								marker = gMap.addMarker(new MarkerOptions().position(setlatlng).title("marker"+ (markerList.size()+1)).snippet(address.get(0).getAddressLine(0) + " " + address.get(0).getAddressLine(1)));
 								marker.showInfoWindow();
 								markerList.add(marker);
 								getDate(ref, marker);
@@ -381,7 +380,7 @@ LocationListener {
 				
 				@Override
 				public void onDateSet(DatePicker view, int year, int monthOfYear,
-						final int dayOfMonth) {
+						int dayOfMonth) {
 					// TODO Auto-generated method stub
 					
 					if(mYear < year || mYear == year){

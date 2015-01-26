@@ -1,17 +1,25 @@
 package com.example.geomarketv3_uilogic;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.beardedhen.androidbootstrap.BootstrapButton;
+import com.cloudinary.Cloudinary;
+import com.cloudinary.Transformation;
+import com.example.geomarketv3.ProductAdapter;
 import com.example.geomarketv3.R;
 import com.example.geomarketv3.R.layout;
 import com.example.geomarketv3.R.menu;
+import com.example.geomarketv3_asynctask.GetImageProduct;
+import com.example.geomarketv3_asynctask.GetProductList;
 import com.example.geomarketv3_asynctask.GetSaleMemberDetail;
 import com.example.geomarketv3_fragment.SalesMemberFragment;
 import com.firebase.client.ChildEventListener;
@@ -19,6 +27,7 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.geomarketv3.entity.Product;
 import com.geomarketv3.entity.User;
 import com.geomarketv3.geofencing.GeofenceRequester;
 import com.geomarketv3.geofencing.SimpleGeofence;
@@ -57,6 +66,7 @@ import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -85,6 +95,10 @@ LocationListener{
     public static User user;
     public BootstrapButton GoBtn;
     private static TextView nameTV, titleTV, emailTV, contactTV;
+    private ProductAdapter adapter;
+    private ArrayList<Product> productList;
+    private Cloudinary cloudinary;
+    private ListView list;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -94,12 +108,20 @@ LocationListener{
 		rl = (RelativeLayout) findViewById(R.id.rlView);
 		rl.setVisibility(View.GONE);
 		user = new User();
-		//rl.getLayoutParams().height = 800;
+		productList = new ArrayList<Product>();
+		adapter = new ProductAdapter(this, productList);
+		list = (ListView) findViewById(R.id.productlistview);
+		list.setAdapter(adapter);
+		cloudinary = new Cloudinary(Cloudinary.asMap(
+				"cloud_name","dfm9692pu",
+				"api_key", "443893967666533",
+				"api_secret", "uYlUVpAZK405EHc6CsrHF64VVlg"));
 		imgIV= (ImageView) findViewById(R.id.imgIV);
 		nameTV = (TextView) findViewById(R.id.nameTV);
 		titleTV = (TextView) findViewById(R.id.titleTV);
 		emailTV = (TextView) findViewById(R.id.emailTV);
 		contactTV = (TextView) findViewById(R.id.contactTV);
+
 		GoBtn = (BootstrapButton) findViewById(R.id.GoBtn);
 		markerList = new ArrayList<Marker>();
 		gMap = mf.getMap();
@@ -118,150 +140,44 @@ LocationListener{
         // Set the fastest update interval to 1 second
         mLocationRequest.setFastestInterval(1000 * 1);
         ref = new Firebase("https://mmarketnyp.firebaseio.com/user");
-        ref.addChildEventListener(new ChildEventListener(){
 
-			@Override
-			public void onCancelled(FirebaseError error) {
-				// TODO Auto-generated method stub
-				System.out.println(error);
-			}
+       ref.addChildEventListener(new ChildEventListener(){
 
-			@Override
-			public void onChildAdded(DataSnapshot snapshot, String str) {
-				// TODO Auto-generated method stub
-				Map<String, Object> addSalePMaps = (Map<String, Object>) snapshot.getValue();
-				if(addSalePMaps.get("role").equals("sales")){
-					
-					double lat = Double.parseDouble(addSalePMaps.get("lat").toString());
-					double lng = Double.parseDouble(addSalePMaps.get("lng").toString());
-					if(lat != 0 && lng != 0){
-						marker = gMap.addMarker(new MarkerOptions().position(new LatLng(lat,lng)).title(addSalePMaps.get("name").toString()+ " " +addSalePMaps.get("title").toString()).snippet("Click here to view the offer!!"));
-						marker.showInfoWindow();
-						markerList.add(marker);
-						gMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener(){
+		@Override
+		public void onCancelled(FirebaseError arg0) {
+			// TODO Auto-generated method stub
+			
+		}
 
-							@Override
-							public void onInfoWindowClick(Marker marker) {
-								// TODO Auto-generated method stub
-								if(rl.getVisibility() == View.GONE){
-									//savePreferences("salesid", marker.getTitle());
-									GetSaleMemberDetail getMem = new GetSaleMemberDetail(ViewSalesActivity.this, marker.getTitle());
-									getMem.execute();
-									rl.setVisibility(View.VISIBLE);
-								}
-								//Fragment SalesMemFragment = new SalesMemberFragment();
-								//ViewSalesActivity.this.getSupportFragmentManager().beginTransaction().add(R.id.saleMemberFragment, SalesMemFragment, "salesMember").commit();
-							
-							}
-							
-						});
-						UiGeofence = new SimpleGeofence(addSalePMaps.get("title").toString(), lat, lng, radius,Geofence.NEVER_EXPIRE, Geofence.GEOFENCE_TRANSITION_ENTER);
-						mPrefs.setGeofence("There is some offer Near you find them now!!!", UiGeofence);
-						mCurrentGeofences.add(UiGeofence.toGeofence());
-						try{
-							mGeofenceRequester.addGeofences(mCurrentGeofences, "GeoMarket", "there is a offer near you!! Don't miss it", 0);
-							
-						}catch(UnsupportedOperationException e){
-	
-							Toast.makeText(getApplicationContext(), R.string.add_geofences_already_requested_error, Toast.LENGTH_LONG).show();
-						}
-					}
-				}
-			}
+		@Override
+		public void onChildAdded(DataSnapshot data, String arg1) {
+			// TODO Auto-generated method stub
+			GetSalesLoc(data);
+			GetSalesProduct(data);
+		}
 
-			@Override
-			public void onChildChanged(DataSnapshot snapshot, String str) {
-				// TODO Auto-generated method stub
-					Map<String, Object> addSalePMaps = (Map<String, Object>) snapshot.getValue();
-									
-									if(addSalePMaps.get("role").equals("sales")){
-										double lat = Double.parseDouble(addSalePMaps.get("lat").toString());
-										double lng = Double.parseDouble(addSalePMaps.get("lng").toString());
-										
-										if(lat != 0 && lng != 0){
-											marker = gMap.addMarker(new MarkerOptions().position(new LatLng(lat,lng)).title(addSalePMaps.get("name").toString()+ " " +addSalePMaps.get("title").toString()).snippet("Click here to view the offer!!"));
-											marker.showInfoWindow();
-											markerList.add(marker);
-											
-											gMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener(){
-						
-												@Override
-												public void onInfoWindowClick(Marker marker) {
-													// TODO Auto-generated method stub
-													if(rl.getVisibility() == View.GONE){
-														//savePreferences("salesid", marker.getTitle());
-														GetSaleMemberDetail getMem = new GetSaleMemberDetail(ViewSalesActivity.this, marker.getTitle());
-														getMem.execute();
-														rl.setVisibility(View.VISIBLE);
-													}
-													//Fragment SalesMemFragment = new SalesMemberFragment();
-													//ViewSalesActivity.this.getSupportFragmentManager().beginTransaction().add(R.id.saleMemberFragment, SalesMemFragment, "salesMember").commit();
-												}
-												
-											});
-											
-											UiGeofence = new SimpleGeofence(addSalePMaps.get("title").toString(), lat, lng, radius,Geofence.NEVER_EXPIRE, Geofence.GEOFENCE_TRANSITION_ENTER);
-											mPrefs.setGeofence("There is some offer Near you find them now!!!", UiGeofence);
-											mCurrentGeofences.add(UiGeofence.toGeofence());
-											try{
-												mGeofenceRequester.addGeofences(mCurrentGeofences, "GeoMarket", "there is a offer near you!! Don't miss it", 0);
-												
-											}catch(UnsupportedOperationException e){
-						
-												Toast.makeText(getApplicationContext(), R.string.add_geofences_already_requested_error, Toast.LENGTH_LONG).show();
-											}
-										}else{
-											System.out.println("removing " + addSalePMaps.get("title"));
-											
-											for(Marker marker : markerList){
-												System.out.println("marker title 1 " + marker.getTitle()+ " " + addSalePMaps.get("title"));
-												String title = marker.getTitle().substring(marker.getTitle().indexOf(" ")+1, marker.getTitle().length());
-												System.out.println(title);
-												if(title.equals(addSalePMaps.get("title").toString())){
-													System.out.println("marker title 2 " + marker.getTitle());
-													marker.remove();
-													markerList.remove(marker);
-													for(int i=0; i<mCurrentGeofences.size(); i++){
-														if(mCurrentGeofences.get(i).getRequestId().equals(addSalePMaps.get("title"))){
-															mCurrentGeofences.remove(i);
-														}
-													}
-												}
-											}
-											
-											
-										}
-									}
-				
-			}
+		@Override
+		public void onChildChanged(DataSnapshot data, String arg1) {
+			// TODO Auto-generated method stub
+			GetSalesLoc(data);
+			GetSalesProduct(data);
+		}
 
-			@Override
-			public void onChildMoved(DataSnapshot arg0, String arg1) {
-				// TODO Auto-generated method stub
-				
-			}
+		@Override
+		public void onChildMoved(DataSnapshot arg0, String arg1) {
+			// TODO Auto-generated method stub
+			
+		}
 
-			@Override
-			public void onChildRemoved(DataSnapshot arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-        	
-        });
+		@Override
+		public void onChildRemoved(DataSnapshot arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+    	   
+       });
        
-        GoBtn.setOnClickListener(new OnClickListener(){
-
-			@Override
-			public void onClick(View view) {
-				// TODO Auto-generated method stub
-				Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?saddr=1.379268,103.849559&daddr=1.379468,103.848559"));
-				
-				intent.setClassName("com.google.android.apps.maps","com.google.android.maps.MapsActivity");
-				//startActivity(intent);
-				ViewSalesActivity.this.startActivityForResult(intent, 1);
-			}
-        	
-        });
+        
 	}
 
 	@Override
@@ -337,15 +253,7 @@ LocationListener{
 		}else{
 			Toast.makeText(getApplicationContext(), "You wan to quit? not yet done ahahaha", Toast.LENGTH_SHORT).show();
 		}
-		/*
-		Fragment fragment = ViewSalesActivity.this.getSupportFragmentManager().findFragmentByTag("salesMember");
-		if(fragment != null){
-			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-			ft.remove(fragment);
-			ft.commit();
-		}else{
-			Toast.makeText(getApplicationContext(), "You wan to quit? not yet done ahahaha", Toast.LENGTH_LONG).show();
-		}*/
+		
 	}
 	
 	private void savePreferences(String key, String value){
@@ -362,7 +270,7 @@ LocationListener{
 		titleTV.setText(user.getTitle());
 		nameTV.setText(user.getName());
 		emailTV.setText(user.getEmail());
-		System.out.println("contact " + user.getContact());
+		
 		contactTV.setText(Integer.toString(user.getContact()));
 	}
 
@@ -371,4 +279,89 @@ LocationListener{
 		// TODO Auto-generated method stub
 		
 	}
+	private void GetSalesProduct(DataSnapshot data){
+		Map<String, Object> saleUserMaps = (Map<String, Object>) data.getValue();
+		if(saleUserMaps.get("role").equals("sales")){
+			Map<String, Object> saleProductMaps = (Map<String, Object>) saleUserMaps.get("product");
+			if(saleProductMaps != null){
+				for(String i: saleProductMaps.keySet()){
+					
+					Map<String, Object> product = (Map<String, Object>) saleProductMaps.get(i);
+					if(product.get("status").toString().equals("active")){
+						System.out.println("key " + i);
+						Product item = new Product();
+						item.setId(i);
+						item.setDetail(product.get("detail").toString());
+						item.setName(product.get("name").toString());
+						item.setPrice(Double.parseDouble(product.get("price").toString()));
+						item.setStatus(product.get("status").toString());
+						String url = cloudinary.url().format("jpg").transformation(new Transformation().width(300).crop("fit")).generate(i);
+						item.setImgURL(url);
+						GetImageProduct getImage = new GetImageProduct(ViewSalesActivity.this,url, item, adapter);
+						getImage.execute();	
+						productList.add(item);
+					}
+				}
+			}
+		}
+	}
+	private void GetSalesLoc(DataSnapshot data){
+		
+		Map<String, Object> saleUserMaps = (Map<String, Object>) data.getValue();
+		if(saleUserMaps.get("role").equals("sales")){
+			
+			Map<String, Object> saleLocMaps = (Map<String, Object>) saleUserMaps.get("location");
+			if(saleLocMaps != null){
+				Date date = new Date();
+				DateFormat dateFormat = new SimpleDateFormat("dd/M/yyyy");
+				for(String i: saleLocMaps.keySet()){
+					
+						Map<String, Object> saleLocMap = (Map<String, Object>) saleLocMaps.get(i);
+						if(dateFormat.format(date).toString().equals(saleLocMap.get("date").toString())){
+							LatLng latlng = new LatLng(Double.parseDouble(saleLocMap.get("lat").toString()), Double.parseDouble(saleLocMap.get("lng").toString()));
+							
+							marker = gMap.addMarker(new MarkerOptions().position(latlng));
+							marker.setTitle(saleUserMaps.get("title").toString());
+							marker.setSnippet("sales on Date: " + saleLocMap.get("date").toString());
+							marker.showInfoWindow();
+							
+							
+							gMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener(){
+	
+								@Override
+								public void onInfoWindowClick(Marker marker) {
+									// TODO Auto-generated method stub
+									if(rl.getVisibility() == View.GONE){
+										GetSaleMemberDetail getSaleMem = new GetSaleMemberDetail(ViewSalesActivity.this, marker.getTitle());
+										getSaleMem.execute();
+										final double lat = marker.getPosition().latitude;
+										final double lng = marker.getPosition().longitude;
+										GoBtn.setOnClickListener(new OnClickListener(){
+
+											@Override
+											public void onClick(View view) {
+												// TODO Auto-generated method stub
+												Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?saddr="+lat+","+lng+"&daddr=1.379468,103.848559"));
+												
+												intent.setClassName("com.google.android.apps.maps","com.google.android.maps.MapsActivity");
+												ViewSalesActivity.this.startActivityForResult(intent, 1);
+											}
+								        	
+								        });
+										rl.setVisibility(View.VISIBLE);
+									}
+								}
+								
+							});
+						}else{
+							System.out.println("not today date: " + dateFormat.format(date));
+						}
+						
+				}
+			}
+		}
+		
+	}
+	
+	
 }

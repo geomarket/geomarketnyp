@@ -10,7 +10,7 @@ import java.util.Map;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.Transformation;
 import com.example.geomarketv3.ProductAdapter;
-import com.example.geomarketv3.ProductList;
+import com.example.geomarketv3_uilogic.ProductList;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;

@@ -50,15 +50,16 @@
         android:textSize="32sp"
         android:text="Title:" />
    
-    <TextView
-        android:id="@+id/sloganTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/titleTV"
-        android:paddingTop="5dp"
-        android:paddingBottom="10dp"
-        android:textSize="20sp"
-        android:text="slogan" />
+    	<ListView
+        android:id="@+id/productlistview"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:background="@android:color/transparent"
+        android:cacheColorHint="@android:color/transparent"
+        android:divider="#CCCCCC"
+        android:dividerHeight="1dp"/>
     </RelativeLayout>
     	
     
@@ -108,6 +109,19 @@
 	        android:paddingBottom="5dp"
 	        android:layout_below="@+id/emailTV"
 	        android:drawableLeft="@drawable/dot" />
+	    	
+	    	    <LinearLayout
+			    	android:layout_width="fill_parent"
+			    	android:layout_height="wrap_content"
+			    	android:orientation="vertical"
+			    	android:id="@+id/llviewproduct">
+			    		<ListView
+			    		    android:id="@+id/productList"
+			    		    android:layout_width="fill_parent"
+			    			android:layout_height="wrap_content"
+			    		    />
+	    	        </LinearLayout>
+	    	
 	    
 	        <com.beardedhen.androidbootstrap.BootstrapButton
 	          		 android:id="@+id/GoBtn"

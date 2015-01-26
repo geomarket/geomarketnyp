@@ -63,27 +63,24 @@ public class GetSaleMemberDetail extends AsyncTask<Object, Object, Object>{
 				
 				Map<String, Object> usersMaps = (Map<String, Object>) snapshot.getValue();
 				
-				String nameStr = name.substring(0, name.indexOf(" "));
-				String title = name.substring(name.indexOf(" ")+ 1, name.length());
+				
 				
 				for(String i : usersMaps.keySet()){
 					
 					Map<String, Object> userMap = (Map<String, Object>) usersMaps.get(i);
 					
 					if(userMap.get("role").toString().equals("sales")){
-						if(userMap.get("name").toString().equals(nameStr)){
-							
-							if(userMap.get("title").toString().equals(title)){
+						if(userMap.get("title").toString().equals(name)){
 								imgurl = cloudinary.url().format("jpg").transformation(new Transformation().width(1800).crop("fit")).generate(i);
 								
 								GetImage getImg = new GetImage();
 								getImg.imgurl = imgurl;
 								getImg.execute();	
 								ViewSalesActivity.user.setTitle(userMap.get("title").toString());
+								
 								ViewSalesActivity.user.setName(userMap.get("name").toString());
 								ViewSalesActivity.user.setEmail(userMap.get("email").toString());
 								ViewSalesActivity.user.setContact(Integer.parseInt(userMap.get("contact").toString()));
-							}
 						}
 					}
 				}

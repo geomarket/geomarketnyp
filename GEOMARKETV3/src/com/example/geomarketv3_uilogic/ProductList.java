@@ -1,4 +1,4 @@
-package com.example.geomarketv3;
+package com.example.geomarketv3_uilogic;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -8,8 +8,12 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.cloudinary.Cloudinary;
+import com.example.geomarketv3.ProductAdapter;
+import com.example.geomarketv3.R;
+import com.example.geomarketv3.R.id;
+import com.example.geomarketv3.R.layout;
+import com.example.geomarketv3.R.menu;
 import com.example.geomarketv3_asynctask.GetProductList;
-import com.example.geomarketv3_uilogic.SetLocActivity;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
