@@ -74,6 +74,7 @@ public class User_Login extends AsyncTask<Object, Object, Object> {
 									activity.finish();
 								}else{
 									Intent intent = new Intent(activity, ViewSalesActivity.class);
+									intent.putExtra("userid", userid);
 									activity.startActivity(intent);
 									activity.finish();
 								}

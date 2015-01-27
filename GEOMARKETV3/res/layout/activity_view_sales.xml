@@ -48,8 +48,17 @@
         android:layout_height="wrap_content"
         android:textStyle="bold"
         android:textSize="32sp"
+        android:layout_marginRight="70dp"
         android:text="Title:" />
-   
+   		 <com.beardedhen.androidbootstrap.BootstrapButton
+	          		 android:id="@+id/favBTN"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_toRightOf="@+id/titleTV"
+					android:layout_alignParentRight="true"
+	                bootstrapbutton:bb_icon_left="fa-star-o"
+	                bootstrapbutton:bb_roundedCorners="true"
+	                bootstrapbutton:bb_type="primary" />
     	<ListView
         android:id="@+id/productlistview"
         android:layout_height="match_parent"

@@ -76,8 +76,9 @@ public class GetSaleMemberDetail extends AsyncTask<Object, Object, Object>{
 								GetImage getImg = new GetImage();
 								getImg.imgurl = imgurl;
 								getImg.execute();	
+								System.out.println("key " + userMap.keySet());
 								ViewSalesActivity.user.setTitle(userMap.get("title").toString());
-								
+								ViewSalesActivity.user.setId(userMap.keySet().toString());
 								ViewSalesActivity.user.setName(userMap.get("name").toString());
 								ViewSalesActivity.user.setEmail(userMap.get("email").toString());
 								ViewSalesActivity.user.setContact(Integer.parseInt(userMap.get("contact").toString()));

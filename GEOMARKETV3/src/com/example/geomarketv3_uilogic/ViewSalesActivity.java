@@ -80,7 +80,8 @@ LocationListener{
 	private LocationClient mLocationClient;
     private Location mCurrentLocation;
     private LocationRequest mLocationRequest;
-    private Firebase ref;
+    private Firebase ref, updateFav, updateSaleFav;
+    private String userid;
     private SimpleGeofenceStore mPrefs;
     private List<Geofence> mCurrentGeofences;
     private GeofenceRequester mGeofenceRequester;
@@ -95,12 +96,13 @@ LocationListener{
     private static ImageView imgIV;
     public static Bitmap bitImage = null;
     public static User user;
-    public BootstrapButton GoBtn;
+    public BootstrapButton GoBtn, FavBtn;
     private static TextView nameTV, titleTV, emailTV, contactTV;
     private ProductAdapter adapter;
     private ArrayList<Product> productList;
     private Cloudinary cloudinary;
     private ListView list;
+    private ArrayList<String> favList;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -109,7 +111,10 @@ LocationListener{
 		fl = (FrameLayout) findViewById(R.id.saleMemberFragment);
 		rl = (RelativeLayout) findViewById(R.id.rlView);
 		rl.setVisibility(View.GONE);
+		userid = getIntent().getStringExtra("userid");
 		user = new User();
+		favList = new ArrayList<String>();
+		getFav(userid, favList);
 		productList = new ArrayList<Product>();
 		adapter = new ProductAdapter(this, productList);
 		list = (ListView) findViewById(R.id.productlistview);
@@ -125,6 +130,7 @@ LocationListener{
 		contactTV = (TextView) findViewById(R.id.contactTV);
 
 		GoBtn = (BootstrapButton) findViewById(R.id.GoBtn);
+		FavBtn = (BootstrapButton) findViewById(R.id.favBTN);
 		markerList = new ArrayList<Marker>();
 		gMap = mf.getMap();
 		gMap.setMyLocationEnabled(true);
@@ -141,55 +147,7 @@ LocationListener{
         mLocationRequest.setInterval(1000 * 5);
         // Set the fastest update interval to 1 second
         mLocationRequest.setFastestInterval(1000 * 1);
-        list.setOnTouchListener(new OnTouchListener(){
 
-			@Override
-			public boolean onTouch(View v, MotionEvent arg1) {
-				// TODO Auto-generated method stub
-				v.getParent().requestDisallowInterceptTouchEvent(true);
-				return false;
-			}
-        	
-        });
-        ref = new Firebase("https://mmarketnyp.firebaseio.com/user");
-
-       ref.addChildEventListener(new ChildEventListener(){
-
-		@Override
-		public void onCancelled(FirebaseError arg0) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void onChildAdded(DataSnapshot data, String arg1) {
-			// TODO Auto-generated method stub
-			GetSalesLoc(data);
-			GetSalesProduct(data);
-		}
-
-		@Override
-		public void onChildChanged(DataSnapshot data, String arg1) {
-			// TODO Auto-generated method stub
-			GetSalesLoc(data);
-			GetSalesProduct(data);
-		}
-
-		@Override
-		public void onChildMoved(DataSnapshot arg0, String arg1) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void onChildRemoved(DataSnapshot arg0) {
-			// TODO Auto-generated method stub
-			
-		}
-    	   
-       });
-       
-        
 	}
 
 	@Override
@@ -227,6 +185,54 @@ LocationListener{
                 try{
                 	CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), 16);
 					gMap.animateCamera(cameraUpdate); 
+					
+					 ref = new Firebase("https://mmarketnyp.firebaseio.com/user");
+				       ref.addChildEventListener(new ChildEventListener(){
+
+						@Override
+						public void onCancelled(FirebaseError arg0) {
+							// TODO Auto-generated method stub
+							
+						}
+
+						@Override
+						public void onChildAdded(DataSnapshot data, String arg1) {
+							// TODO Auto-generated method stub
+							GetSalesLoc(data);
+							GetSalesProduct(data);
+						}
+
+						@Override
+						public void onChildChanged(DataSnapshot data, String arg1) {
+							// TODO Auto-generated method stub
+							GetSalesLoc(data);
+							GetSalesProduct(data);
+						}
+
+						@Override
+						public void onChildMoved(DataSnapshot arg0, String arg1) {
+							// TODO Auto-generated method stub
+							
+						}
+
+						@Override
+						public void onChildRemoved(DataSnapshot arg0) {
+							// TODO Auto-generated method stub
+							
+						}
+				    	   
+				       });
+				       
+				       list.setOnTouchListener(new OnTouchListener(){
+
+							@Override
+							public boolean onTouch(View v, MotionEvent arg1) {
+								// TODO Auto-generated method stub
+								v.getParent().requestDisallowInterceptTouchEvent(true);
+								return false;
+							}
+				        	
+				        });
                 }catch(NullPointerException npe){
                      
                     Toast.makeText(this, "Failed to Connect", Toast.LENGTH_SHORT).show();
@@ -282,7 +288,6 @@ LocationListener{
 		titleTV.setText(user.getTitle());
 		nameTV.setText(user.getName());
 		emailTV.setText(user.getEmail());
-		
 		contactTV.setText(Integer.toString(user.getContact()));
 	}
 
@@ -300,7 +305,7 @@ LocationListener{
 					
 					Map<String, Object> product = (Map<String, Object>) saleProductMaps.get(i);
 					if(product.get("status").toString().equals("active")){
-						System.out.println("key " + i);
+						
 						Product item = new Product();
 						item.setId(i);
 						item.setDetail(product.get("detail").toString());
@@ -318,7 +323,7 @@ LocationListener{
 		}
 	}
 	private void GetSalesLoc(DataSnapshot data){
-		
+		final String userKey = data.getKey();
 		Map<String, Object> saleUserMaps = (Map<String, Object>) data.getValue();
 		if(saleUserMaps.get("role").equals("sales")){
 			
@@ -326,9 +331,11 @@ LocationListener{
 			if(saleLocMaps != null){
 				Date date = new Date();
 				DateFormat dateFormat = new SimpleDateFormat("dd/M/yyyy");
+				
 				for(String i: saleLocMaps.keySet()){
-					
+						
 						Map<String, Object> saleLocMap = (Map<String, Object>) saleLocMaps.get(i);
+						
 						if(dateFormat.format(date).toString().equals(saleLocMap.get("date").toString())){
 							LatLng latlng = new LatLng(Double.parseDouble(saleLocMap.get("lat").toString()), Double.parseDouble(saleLocMap.get("lng").toString()));
 							
@@ -341,13 +348,42 @@ LocationListener{
 							gMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener(){
 	
 								@Override
-								public void onInfoWindowClick(Marker marker) {
+								public void onInfoWindowClick(final Marker marker) {
 									// TODO Auto-generated method stub
 									if(rl.getVisibility() == View.GONE){
 										GetSaleMemberDetail getSaleMem = new GetSaleMemberDetail(ViewSalesActivity.this, marker.getTitle());
 										getSaleMem.execute();
 										final double lat = marker.getPosition().latitude;
 										final double lng = marker.getPosition().longitude;
+										if(favList.size() > 0){
+											for(int a=0; a<favList.size(); a++){
+												if(favList.get(a).equals(userKey)){
+													FavBtn.setBootstrapType("success");
+												}
+											}
+										}
+										
+										FavBtn.setOnClickListener(new OnClickListener(){
+
+											@Override
+											public void onClick(View view) {
+												// TODO Auto-generated method stub
+												String url = "https://mmarketnyp.firebaseio.com/user/"+ userid;
+												updateFav = new Firebase(url);
+												Firebase FavRef = updateFav.child("favourite");
+												Date date = new Date();
+												SimpleDateFormat curFormater = new SimpleDateFormat("dd/M/yyyy"); 
+												Map<String, String> favMap = new HashMap<String, String>();
+												favMap.put("userfav", userKey);
+												favMap.put("date", curFormater.format(date));
+												FavRef.push().setValue(favMap);
+												FavBtn.setBootstrapType("success");
+												
+											}
+								        	
+								        });
+										
+										
 										GoBtn.setOnClickListener(new OnClickListener(){
 
 											@Override
@@ -375,5 +411,43 @@ LocationListener{
 		
 	}
 	
+	private void getFav(String userid, final ArrayList<String> favList){
+		String url = "https://mmarketnyp.firebaseio.com/user/"+ userid+"/favourite";
+		Firebase ref = new Firebase(url);
+		ref.addChildEventListener(new ChildEventListener(){
+
+			@Override
+			public void onCancelled(FirebaseError arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onChildAdded(DataSnapshot data, String arg1) {
+				// TODO Auto-generated method stub
+				Map<String, Object> userFavMaps = (Map<String, Object>) data.getValue();
+				favList.add(userFavMaps.get("userfav").toString());
+			}
+
+			@Override
+			public void onChildChanged(DataSnapshot arg0, String arg1) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onChildMoved(DataSnapshot arg0, String arg1) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onChildRemoved(DataSnapshot arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
+	}
 	
 }
