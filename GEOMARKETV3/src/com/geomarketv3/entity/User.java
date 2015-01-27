@@ -9,6 +9,7 @@ public class User {
 	private String imgURL;
 	private Bitmap image;
 	private String id;
+	
 	public User(){
 		
 	}

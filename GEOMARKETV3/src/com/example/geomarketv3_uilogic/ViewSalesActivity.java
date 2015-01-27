@@ -27,6 +27,7 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.geomarketv3.entity.FavItem;
 import com.geomarketv3.entity.Product;
 import com.geomarketv3.entity.User;
 import com.geomarketv3.geofencing.GeofenceRequester;
@@ -102,7 +103,7 @@ LocationListener{
     private ArrayList<Product> productList;
     private Cloudinary cloudinary;
     private ListView list;
-    private ArrayList<String> favList;
+    private ArrayList<FavItem> favList;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -113,7 +114,7 @@ LocationListener{
 		rl.setVisibility(View.GONE);
 		userid = getIntent().getStringExtra("userid");
 		user = new User();
-		favList = new ArrayList<String>();
+		favList = new ArrayList<FavItem>();
 		getFav(userid, favList);
 		productList = new ArrayList<Product>();
 		adapter = new ProductAdapter(this, productList);
@@ -357,7 +358,7 @@ LocationListener{
 										final double lng = marker.getPosition().longitude;
 										if(favList.size() > 0){
 											for(int a=0; a<favList.size(); a++){
-												if(favList.get(a).equals(userKey)){
+												if(favList.get(a).getFavID().equals(userKey)){
 													FavBtn.setBootstrapType("success");
 												}
 											}
@@ -368,17 +369,39 @@ LocationListener{
 											@Override
 											public void onClick(View view) {
 												// TODO Auto-generated method stub
-												String url = "https://mmarketnyp.firebaseio.com/user/"+ userid;
-												updateFav = new Firebase(url);
-												Firebase FavRef = updateFav.child("favourite");
-												Date date = new Date();
-												SimpleDateFormat curFormater = new SimpleDateFormat("dd/M/yyyy"); 
-												Map<String, String> favMap = new HashMap<String, String>();
-												favMap.put("userfav", userKey);
-												favMap.put("date", curFormater.format(date));
-												FavRef.push().setValue(favMap);
-												FavBtn.setBootstrapType("success");
-												
+												if(favList.size() > 0){
+													for(int a=0; a<favList.size(); a++){
+														if(favList.get(a).getFavID().equals(userKey)){
+															String url = "https://mmarketnyp.firebaseio.com/user/"+ userid+"/favourite/" + favList.get(a).getId();
+															updateFav = new Firebase(url);
+															updateFav.removeValue();
+															favList.remove(a);
+															FavBtn.setBootstrapType("primary");
+														}else{
+															String url = "https://mmarketnyp.firebaseio.com/user/"+ userid;
+															updateFav = new Firebase(url);
+															Firebase FavRef = updateFav.child("favourite");
+															Date date = new Date();
+															SimpleDateFormat curFormater = new SimpleDateFormat("dd/M/yyyy"); 
+															Map<String, String> favMap = new HashMap<String, String>();
+															favMap.put("userfav", userKey);
+															favMap.put("date", curFormater.format(date));
+															FavRef.push().setValue(favMap);
+															FavBtn.setBootstrapType("success");
+														}
+													}
+												}else{
+													String url = "https://mmarketnyp.firebaseio.com/user/"+ userid;
+													updateFav = new Firebase(url);
+													Firebase FavRef = updateFav.child("favourite");
+													Date date = new Date();
+													SimpleDateFormat curFormater = new SimpleDateFormat("dd/M/yyyy"); 
+													Map<String, String> favMap = new HashMap<String, String>();
+													favMap.put("userfav", userKey);
+													favMap.put("date", curFormater.format(date));
+													FavRef.push().setValue(favMap);
+													FavBtn.setBootstrapType("success");
+												}
 											}
 								        	
 								        });
@@ -411,7 +434,7 @@ LocationListener{
 		
 	}
 	
-	private void getFav(String userid, final ArrayList<String> favList){
+	private void getFav(String userid, final ArrayList<FavItem> favList){
 		String url = "https://mmarketnyp.firebaseio.com/user/"+ userid+"/favourite";
 		Firebase ref = new Firebase(url);
 		ref.addChildEventListener(new ChildEventListener(){
@@ -426,7 +449,11 @@ LocationListener{
 			public void onChildAdded(DataSnapshot data, String arg1) {
 				// TODO Auto-generated method stub
 				Map<String, Object> userFavMaps = (Map<String, Object>) data.getValue();
-				favList.add(userFavMaps.get("userfav").toString());
+				FavItem item = new FavItem();
+				item.setId(data.getKey());
+				item.setFavID(userFavMaps.get("userfav").toString());
+				item.setDate(userFavMaps.get("date").toString());
+				favList.add(item);
 			}
 
 			@Override
