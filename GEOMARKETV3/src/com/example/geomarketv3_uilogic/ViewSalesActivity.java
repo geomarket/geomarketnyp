@@ -61,8 +61,10 @@ import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
 import android.widget.ImageView;
@@ -139,6 +141,16 @@ LocationListener{
         mLocationRequest.setInterval(1000 * 5);
         // Set the fastest update interval to 1 second
         mLocationRequest.setFastestInterval(1000 * 1);
+        list.setOnTouchListener(new OnTouchListener(){
+
+			@Override
+			public boolean onTouch(View v, MotionEvent arg1) {
+				// TODO Auto-generated method stub
+				v.getParent().requestDisallowInterceptTouchEvent(true);
+				return false;
+			}
+        	
+        });
         ref = new Firebase("https://mmarketnyp.firebaseio.com/user");
 
        ref.addChildEventListener(new ChildEventListener(){
