@@ -4,6 +4,7 @@ import java.io.IOException;
 
 
 
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -17,8 +18,11 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.geomarketv3.geofencing.GeofenceRequester;
+import com.geomarketv3.geofencing.SimpleGeofence;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
@@ -72,11 +76,12 @@ LocationListener {
 	private double lat, lng;
 	private Marker marker;
 	private ArrayList<Marker> markerList;
-	 // locations objects
     private LocationClient mLocationClient;
-    
     private Location mCurrentLocation;
     private LocationRequest mLocationRequest;
+    private GeofenceRequester mGeofenceRequester;
+	private SimpleGeofence UiGeofence;
+	List<Geofence> mCurrentGeofences;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

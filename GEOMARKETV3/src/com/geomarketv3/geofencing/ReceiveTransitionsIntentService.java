@@ -179,9 +179,9 @@ public class ReceiveTransitionsIntentService extends IntentService {
     	
     		if(GeoFenceID == 0){
     			
-    			mBuilder.setContentTitle(contentTitle);
-    		      mBuilder.setContentText("Scroll down to view offer");
-    		      mBuilder.setTicker("OFFER DETECED!!!!");
+    			mBuilder.setContentTitle("GeoMarket");
+    		      mBuilder.setContentText("There is a SALES nearby you don't miss it!!!");
+    		      mBuilder.setTicker("NEARBY SALES DETECED!!!!");
     		      mBuilder.setSmallIcon(R.drawable.ic_launcher);
 
     		      /* Increase notification number every time a new notification arrives */

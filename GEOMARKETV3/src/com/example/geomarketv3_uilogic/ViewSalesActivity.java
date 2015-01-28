@@ -1,6 +1,7 @@
 package com.example.geomarketv3_uilogic;
 
 import java.text.DateFormat;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
@@ -124,6 +125,9 @@ LocationListener{
 		favList = new ArrayList<FavItem>();
 		getFav(userid, favList);
 		productList = new ArrayList<Product>();
+		mCurrentGeofences = new ArrayList<Geofence>();
+		mPrefs = new SimpleGeofenceStore(ViewSalesActivity.this);
+		mGeofenceRequester = new GeofenceRequester(ViewSalesActivity.this);
 		adapter = new ProductAdapter(this, productList);
 		list = (ListView) findViewById(R.id.productlistview);
 		list.setAdapter(adapter);
@@ -354,8 +358,16 @@ LocationListener{
 							marker.setSnippet("sales on Date: " + saleLocMap.get("date").toString());
 							
 							marker.showInfoWindow();
-							
-							
+							UiGeofence = new SimpleGeofence(i + " has some offer faster find them!!", latlng.latitude, latlng.longitude, radius,Geofence.NEVER_EXPIRE, Geofence.GEOFENCE_TRANSITION_ENTER);
+							mPrefs.setGeofence("There is some offer Near you find them now!!!", UiGeofence);
+							mCurrentGeofences.add(UiGeofence.toGeofence());
+							try{
+								mGeofenceRequester.addGeofences(mCurrentGeofences, "HELLO", "there is a offer near you!! test", 0);
+								
+							}catch(UnsupportedOperationException e){
+
+								Toast.makeText(getApplicationContext(), R.string.add_geofences_already_requested_error, Toast.LENGTH_LONG).show();
+							}
 							gMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener(){
 	
 								@Override
@@ -495,7 +507,7 @@ LocationListener{
 		notifyBuilder.setContentTitle("GeoMarket " + salename);
 		notifyBuilder.setContentText("Your favourite sale is on don't miss them!!");
 		notifyBuilder.setSmallIcon(R.drawable.ic_launcher);
-		
+		notifyBuilder.setTicker("FAVOURITE SALES DETECED!!!!");
 		new Thread(new Runnable(){
 
 			@Override
