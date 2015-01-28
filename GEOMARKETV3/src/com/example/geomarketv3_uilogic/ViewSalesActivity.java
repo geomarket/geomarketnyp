@@ -55,7 +55,11 @@ import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NotificationCompat;
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -104,6 +108,9 @@ LocationListener{
     private Cloudinary cloudinary;
     private ListView list;
     private ArrayList<FavItem> favList;
+    private NotificationManager notifyManager;
+    private NotificationCompat.Builder notifyBuilder;
+    private int MY_NOTIFICATION_ID = 1;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -201,6 +208,7 @@ LocationListener{
 							// TODO Auto-generated method stub
 							GetSalesLoc(data);
 							GetSalesProduct(data);
+							
 						}
 
 						@Override
@@ -208,6 +216,7 @@ LocationListener{
 							// TODO Auto-generated method stub
 							GetSalesLoc(data);
 							GetSalesProduct(data);
+							
 						}
 
 						@Override
@@ -343,6 +352,7 @@ LocationListener{
 							marker = gMap.addMarker(new MarkerOptions().position(latlng));
 							marker.setTitle(saleUserMaps.get("title").toString());
 							marker.setSnippet("sales on Date: " + saleLocMap.get("date").toString());
+							
 							marker.showInfoWindow();
 							
 							
@@ -359,6 +369,7 @@ LocationListener{
 										if(favList.size() > 0){
 											for(int a=0; a<favList.size(); a++){
 												if(favList.get(a).getFavID().equals(userKey)){
+													setNotification(marker.getTitle());
 													FavBtn.setBootstrapType("success");
 												}
 											}
@@ -475,6 +486,25 @@ LocationListener{
 			}
 			
 		});
+	}
+	
+	private void setNotification(String salename){
+		notifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		notifyBuilder = new NotificationCompat.Builder(getApplicationContext());
+		
+		notifyBuilder.setContentTitle("GeoMarket " + salename);
+		notifyBuilder.setContentText("Your favourite sale is on don't miss them!!");
+		notifyBuilder.setSmallIcon(R.drawable.ic_launcher);
+		
+		new Thread(new Runnable(){
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				notifyManager.notify(MY_NOTIFICATION_ID, notifyBuilder.build());
+			}
+			
+		}).start();
 	}
 	
 }
