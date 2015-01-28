@@ -42,6 +42,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -52,6 +53,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -86,8 +88,8 @@ LocationListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_set_loc);
-		Intent intent = getIntent();
-		userid = intent.getStringExtra("userid");
+	
+		userid = userid = getSharedPrefernces();;
 		url = "https://mmarketnyp.firebaseio.com/user/" + userid;
 		ref = new Firebase(url+"/location");
 		MapFragment mf = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
@@ -433,7 +435,10 @@ LocationListener {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
 	
-
+	
+	public String getSharedPrefernces(){
+		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(SetLocActivity.this);
+		return pref.getString("userid", "null");
+	}
 }

@@ -1,0 +1,89 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bootstrapbutton="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/rLayout" >
+<ScrollView
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content">
+    	<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:id="@+id/rlviewoffer"
+    android:gravity="center">
+    
+     <RelativeLayout
+         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/rlIM">
+        
+       <ImageView
+        android:id="@+id/imgIV"
+        android:layout_width="fill_parent"
+        android:layout_height="210dp"
+        android:scaleType="fitStart"
+        android:contentDescription="Image" />
+     </RelativeLayout>
+   
+    <RelativeLayout
+        android:id="@+id/rl1" 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+    	android:paddingRight="10dp">
+       
+        <TextView
+        android:id="@+id/nameTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="20dp"
+        android:text="General Info" />
+        
+         <View
+	    android:id="@+id/view1"
+	    android:layout_width="fill_parent"
+	    android:layout_height="1dp"
+	    android:layout_below="@+id/nameTV"
+	    android:background="@android:color/darker_gray"/>
+  <TextView
+        android:id="@+id/PriceTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/view1"
+        android:layout_marginTop="8dp"
+        android:textStyle="bold"
+        android:text="price" />
+    <TextView
+        android:id="@+id/descTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/PriceTV"
+        android:layout_marginTop="8dp" />
+
+    </RelativeLayout>
+
+</LinearLayout>
+</ScrollView>
+	<LinearLayout
+	    android:id="@+id/llbtn"
+	    android:layout_width="match_parent"
+    	android:layout_height="100dp"
+    	android:orientation="vertical"
+    	android:layout_alignParentBottom="true">
+	    <com.beardedhen.androidbootstrap.BootstrapButton
+          		 android:id="@+id/loginBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="54dp"
+                android:layout_marginLeft="60dp"
+                android:text="Login"
+                android:layout_below="@+id/passwordET"
+                bootstrapbutton:bb_icon_left="fa-sign-in"
+                android:layout_gravity="center"
+                bootstrapbutton:bb_roundedCorners="true"
+                bootstrapbutton:bb_type="primary" />
+	</LinearLayout>
+    	
+ </RelativeLayout>

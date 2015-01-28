@@ -17,6 +17,7 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.Transformation;
 import com.example.geomarketv3.ProductAdapter;
 import com.example.geomarketv3.R;
+import com.example.geomarketv3.ViewProduct;
 import com.example.geomarketv3.R.layout;
 import com.example.geomarketv3.R.menu;
 import com.example.geomarketv3_asynctask.GetImageProduct;
@@ -60,6 +61,8 @@ import android.support.v4.app.NotificationCompat;
 import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -71,11 +74,15 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
+import android.widget.SearchView.OnQueryTextListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -116,11 +123,12 @@ LocationListener{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_view_sales);
+		Firebase.setAndroidContext(this);
 		mf = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
 		fl = (FrameLayout) findViewById(R.id.saleMemberFragment);
 		rl = (RelativeLayout) findViewById(R.id.rlView);
 		rl.setVisibility(View.GONE);
-		userid = getIntent().getStringExtra("userid");
+		userid = getSharedPrefernces();
 		user = new User();
 		favList = new ArrayList<FavItem>();
 		getFav(userid, favList);
@@ -166,6 +174,33 @@ LocationListener{
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.view_sales, menu);
+		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+		SearchView searchView = (SearchView) menu.findItem(R.id.search_icon).getActionView();
+		if (searchView != null) {
+			searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+		}
+		searchView.setOnQueryTextListener(new OnQueryTextListener(){
+
+			@Override
+			public boolean onQueryTextChange(String result) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public boolean onQueryTextSubmit(String result) {
+				// TODO Auto-generated method stub
+				for(int i=0; i< markerList.size(); i++){
+					String str = markerList.get(i).getTitle().toLowerCase();
+					if(str.contains(result)){
+						CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(markerList.get(i).getPosition(), 16);
+						gMap.animateCamera(cameraUpdate); 
+					}
+				}
+				return false;
+			}
+			
+		});
 		return super.onCreateOptionsMenu(menu);
 	}
 	
@@ -204,7 +239,7 @@ LocationListener{
 						@Override
 						public void onCancelled(FirebaseError arg0) {
 							// TODO Auto-generated method stub
-							
+							System.out.println(arg0); 
 						}
 
 						@Override
@@ -243,6 +278,22 @@ LocationListener{
 							public boolean onTouch(View v, MotionEvent arg1) {
 								// TODO Auto-generated method stub
 								v.getParent().requestDisallowInterceptTouchEvent(true);
+								list.setOnItemClickListener(new OnItemClickListener(){
+
+									@Override
+									public void onItemClick(AdapterView<?> arg0, View arg1,int posititon, long arg3) {
+										// TODO Auto-generated method stub
+										Product product = new Product();
+										product.setId(adapter.getItem(posititon).getId());
+										product.setName(adapter.getItem(posititon).getName());
+										product.setPrice(adapter.getItem(posititon).getPrice());
+										product.setDetail(adapter.getItem(posititon).getDetail());
+										Intent intent = new Intent(ViewSalesActivity.this, ViewProduct.class);
+										ViewProduct.product = product;
+										startActivity(intent);
+									}
+									
+								});
 								return false;
 							}
 				        	
@@ -311,6 +362,7 @@ LocationListener{
 		
 	}
 	private void GetSalesProduct(DataSnapshot data){
+		adapter.clear();
 		Map<String, Object> saleUserMaps = (Map<String, Object>) data.getValue();
 		if(saleUserMaps.get("role").equals("sales")){
 			Map<String, Object> saleProductMaps = (Map<String, Object>) saleUserMaps.get("product");
@@ -358,6 +410,7 @@ LocationListener{
 							marker.setSnippet("sales on Date: " + saleLocMap.get("date").toString());
 							
 							marker.showInfoWindow();
+							markerList.add(marker);
 							UiGeofence = new SimpleGeofence(i + " has some offer faster find them!!", latlng.latitude, latlng.longitude, radius,Geofence.NEVER_EXPIRE, Geofence.GEOFENCE_TRANSITION_ENTER);
 							mPrefs.setGeofence("There is some offer Near you find them now!!!", UiGeofence);
 							mCurrentGeofences.add(UiGeofence.toGeofence());
@@ -508,15 +561,21 @@ LocationListener{
 		notifyBuilder.setContentText("Your favourite sale is on don't miss them!!");
 		notifyBuilder.setSmallIcon(R.drawable.ic_launcher);
 		notifyBuilder.setTicker("FAVOURITE SALES DETECED!!!!");
+		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(ViewSalesActivity.this, ViewSalesActivity.class), 0);
 		new Thread(new Runnable(){
 
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
 				notifyManager.notify(MY_NOTIFICATION_ID, notifyBuilder.build());
+				
 			}
 			
 		}).start();
 	}
 	
-}
+	public String getSharedPrefernces(){
+		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ViewSalesActivity.this);
+		return pref.getString("userid", "null");
+	}
+}	

@@ -102,27 +102,6 @@ public class GetProductList extends AsyncTask<Object, Object, Object> {
 		dialog = ProgressDialog.show(activity,"Retrieving Product", "Please wait...", true);
 	}
 
-	public Bitmap loadImageFromURL(String fileUrl){
-		  try {
-		 
-		    URL myFileUrl = new URL (fileUrl);
-		    HttpURLConnection conn =
-		      (HttpURLConnection) myFileUrl.openConnection();
-		    conn.setDoInput(true);
-		    conn.connect();
-		 
-		    InputStream is = (InputStream) conn.getInputStream();
-		    
-		 
-		    return BitmapFactory.decodeStream(is);
-		 
-		  } catch (MalformedURLException e) {
-		    e.printStackTrace();
-		  } catch (Exception e) {
-		    e.printStackTrace();
-		  }
-		 
-		  return null;
-		}
+
 
 }

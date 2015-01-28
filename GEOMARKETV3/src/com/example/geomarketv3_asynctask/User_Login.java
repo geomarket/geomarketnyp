@@ -13,7 +13,10 @@ import com.firebase.client.ValueEventListener;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.widget.Toast;
 
 public class User_Login extends AsyncTask<Object, Object, Object> {
@@ -69,12 +72,12 @@ public class User_Login extends AsyncTask<Object, Object, Object> {
 								
 								if(user.get("role").toString().equals("sales")){
 									Intent intent = new Intent(activity, SetLocActivity.class);
-									intent.putExtra("userid", userid);
+									saveSharedPreference("userid", userid);
 									activity.startActivity(intent);
 									activity.finish();
 								}else{
 									Intent intent = new Intent(activity, ViewSalesActivity.class);
-									intent.putExtra("userid", userid);
+									saveSharedPreference("userid", userid);
 									activity.startActivity(intent);
 									activity.finish();
 								}
@@ -98,6 +101,11 @@ public class User_Login extends AsyncTask<Object, Object, Object> {
 		dialog = ProgressDialog.show(activity, "logging in."," Please wait....", true);
 	}
 	
-	
+	private void saveSharedPreference(String key, String value){
+		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(activity);
+		Editor edit = sp.edit();
+		edit.putString(key, value);
+		edit.commit();
+	}
 
 }

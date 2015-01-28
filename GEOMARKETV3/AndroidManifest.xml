@@ -89,6 +89,14 @@
             android:name="com.example.geomarketv3.ProductAdapter"
             android:label="@string/title_activity_product_adapter" >
         </activity>
+        <activity
+            android:name="com.example.geomarketv3_uilogic.ViewFavList"
+            android:label="@string/title_activity_view_fav_list" >
+        </activity>
+        <activity
+            android:name="com.example.geomarketv3.ViewProduct"
+            android:label="@string/title_activity_view_product" >
+        </activity>
     </application>
 
 </manifest>
