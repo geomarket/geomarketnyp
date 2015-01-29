@@ -27,7 +27,7 @@ public class GetImage extends AsyncTask<Object, Object, Object>{
 	        connection.connect();
 	        InputStream input = connection.getInputStream();
 	        Bitmap myBitmap = BitmapFactory.decodeStream(input);
-	        //SalesMemberFragment.bitImage = myBitmap;
+	        input.close();
 	        ViewSalesActivity.bitImage = myBitmap;
 	     
 		} catch (MalformedURLException e) {

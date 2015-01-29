@@ -74,5 +74,6 @@
     <string name="title_activity_product_adapter">ProductAdapter</string>
     <string name="title_activity_view_fav_list">ViewFavList</string>
     <string name="title_activity_view_product">ViewProduct</string>
+    <string name="title_activity_product_list__user">ProductList_User</string>
 
 </resources>

@@ -1,41 +1,23 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:id="@+id/productRL"
     tools:context=".ProductAdapter" >
 
     <ImageView 
         android:id="@+id/productImg"
-        android:layout_width="160dp"
-        android:layout_height="200dp"
-        android:layout_marginRight="6dp"
-       
+        android:layout_width="fill_parent"
+        android:layout_height="210dp"
         />
+	
 	<TextView 
 	    android:id="@+id/productTitle"
-	    android:layout_width="wrap_content"
-	    android:layout_height="match_parent"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
 	    android:textStyle="bold"
-	    android:layout_toRightOf="@+id/productImg"
-	    android:layout_marginLeft="5dp"
-	   
-	    />
-	<TextView 
-	    android:id="@+id/productPrice"
-	    android:layout_width="wrap_content"
-	    android:layout_height="match_parent"
-	     android:layout_below="@+id/productTitle"
-	     android:layout_toRightOf="@+id/productImg"
-	     android:layout_marginLeft="5dp"
-	    />
-	<TextView 
-	    android:id="@+id/productDetail"
-	    android:layout_width="wrap_content"
-	    android:layout_height="match_parent"
-	    android:layout_alignParentRight="true"
-	    android:layout_marginRight="10dp"
-	    android:layout_centerInParent="true"
+	    android:background="#CCFFFFFF"
+		android:layout_centerHorizontal="true"
 	    />
 
 </RelativeLayout>

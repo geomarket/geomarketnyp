@@ -5,7 +5,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import com.example.geomarketv3.ViewProduct;
+import com.example.geomarketv3_uilogic.ViewProduct;
 
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -24,10 +24,10 @@ public class GetProductImage extends AsyncTask<Object, Object, Object>{
 			    conn.connect();
 			 
 			    InputStream is = (InputStream) conn.getInputStream();
-			    
+			   
 			    ViewProduct.image = BitmapFactory.decodeStream(is);
 			 
-			    
+			    is.close();
 			 
 			  } catch (MalformedURLException e) {
 			    e.printStackTrace();
@@ -40,7 +40,7 @@ public class GetProductImage extends AsyncTask<Object, Object, Object>{
 	@Override
 	protected void onPostExecute(Object arg0) {
 		// TODO Auto-generated method stub
-		ViewProduct.setImage();
+		//ViewProduct.setImage();
 	}
 	
 	

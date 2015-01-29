@@ -17,9 +17,9 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.Transformation;
 import com.example.geomarketv3.ProductAdapter;
 import com.example.geomarketv3.R;
-import com.example.geomarketv3.ViewProduct;
 import com.example.geomarketv3.R.layout;
 import com.example.geomarketv3.R.menu;
+import com.example.geomarketv3_asynctask.GetImage;
 import com.example.geomarketv3_asynctask.GetImageProduct;
 import com.example.geomarketv3_asynctask.GetProductList;
 import com.example.geomarketv3_asynctask.GetSaleMemberDetail;
@@ -109,7 +109,7 @@ LocationListener{
     private static ImageView imgIV;
     public static Bitmap bitImage = null;
     public static User user;
-    public BootstrapButton GoBtn, FavBtn;
+    public BootstrapButton GoBtn, FavBtn, ViewBtn;
     private static TextView nameTV, titleTV, emailTV, contactTV;
     private ProductAdapter adapter;
     private ArrayList<Product> productList;
@@ -136,20 +136,20 @@ LocationListener{
 		mCurrentGeofences = new ArrayList<Geofence>();
 		mPrefs = new SimpleGeofenceStore(ViewSalesActivity.this);
 		mGeofenceRequester = new GeofenceRequester(ViewSalesActivity.this);
-		adapter = new ProductAdapter(this, productList);
-		list = (ListView) findViewById(R.id.productlistview);
-		list.setAdapter(adapter);
+		
 		cloudinary = new Cloudinary(Cloudinary.asMap(
 				"cloud_name","dfm9692pu",
 				"api_key", "443893967666533",
 				"api_secret", "uYlUVpAZK405EHc6CsrHF64VVlg"));
+		
 		imgIV= (ImageView) findViewById(R.id.imgIV);
 		nameTV = (TextView) findViewById(R.id.nameTV);
 		titleTV = (TextView) findViewById(R.id.titleTV);
 		emailTV = (TextView) findViewById(R.id.emailTV);
 		contactTV = (TextView) findViewById(R.id.contactTV);
-
+		ViewBtn = (BootstrapButton) findViewById(R.id.viewBtn);
 		GoBtn = (BootstrapButton) findViewById(R.id.GoBtn);
+		GoBtn.setVisibility(View.GONE);
 		FavBtn = (BootstrapButton) findViewById(R.id.favBTN);
 		markerList = new ArrayList<Marker>();
 		gMap = mf.getMap();
@@ -245,17 +245,13 @@ LocationListener{
 						@Override
 						public void onChildAdded(DataSnapshot data, String arg1) {
 							// TODO Auto-generated method stub
-							GetSalesLoc(data);
-							GetSalesProduct(data);
-							
+							GetSalesLoc(data, mCurrentLocation);
 						}
 
 						@Override
 						public void onChildChanged(DataSnapshot data, String arg1) {
 							// TODO Auto-generated method stub
-							GetSalesLoc(data);
-							GetSalesProduct(data);
-							
+							GetSalesLoc(data, mCurrentLocation);	
 						}
 
 						@Override
@@ -271,33 +267,7 @@ LocationListener{
 						}
 				    	   
 				       });
-				       
-				       list.setOnTouchListener(new OnTouchListener(){
-
-							@Override
-							public boolean onTouch(View v, MotionEvent arg1) {
-								// TODO Auto-generated method stub
-								v.getParent().requestDisallowInterceptTouchEvent(true);
-								list.setOnItemClickListener(new OnItemClickListener(){
-
-									@Override
-									public void onItemClick(AdapterView<?> arg0, View arg1,int posititon, long arg3) {
-										// TODO Auto-generated method stub
-										Product product = new Product();
-										product.setId(adapter.getItem(posititon).getId());
-										product.setName(adapter.getItem(posititon).getName());
-										product.setPrice(adapter.getItem(posititon).getPrice());
-										product.setDetail(adapter.getItem(posititon).getDetail());
-										Intent intent = new Intent(ViewSalesActivity.this, ViewProduct.class);
-										ViewProduct.product = product;
-										startActivity(intent);
-									}
-									
-								});
-								return false;
-							}
-				        	
-				        });
+				     
                 }catch(NullPointerException npe){
                      
                     Toast.makeText(this, "Failed to Connect", Toast.LENGTH_SHORT).show();
@@ -333,19 +303,13 @@ LocationListener{
 	public void onBackPressed() {
 		if(rl.getVisibility() == View.VISIBLE){
 			rl.setVisibility(View.GONE);
+			GoBtn.setVisibility(View.GONE);
 		}else{
 			Toast.makeText(getApplicationContext(), "You wan to quit? not yet done ahahaha", Toast.LENGTH_SHORT).show();
 		}
 		
 	}
-	
-	private void savePreferences(String key, String value){
-    	SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-    	Editor edit = sp.edit();
-    	edit.putString(key, value);
-    	edit.commit();
-    }
-	
+		
 	public static void setImage(){
 		imgIV.setImageBitmap(bitImage);
 	}
@@ -361,34 +325,8 @@ LocationListener{
 		// TODO Auto-generated method stub
 		
 	}
-	private void GetSalesProduct(DataSnapshot data){
-		adapter.clear();
-		Map<String, Object> saleUserMaps = (Map<String, Object>) data.getValue();
-		if(saleUserMaps.get("role").equals("sales")){
-			Map<String, Object> saleProductMaps = (Map<String, Object>) saleUserMaps.get("product");
-			if(saleProductMaps != null){
-				for(String i: saleProductMaps.keySet()){
-					
-					Map<String, Object> product = (Map<String, Object>) saleProductMaps.get(i);
-					if(product.get("status").toString().equals("active")){
-						
-						Product item = new Product();
-						item.setId(i);
-						item.setDetail(product.get("detail").toString());
-						item.setName(product.get("name").toString());
-						item.setPrice(Double.parseDouble(product.get("price").toString()));
-						item.setStatus(product.get("status").toString());
-						String url = cloudinary.url().format("jpg").transformation(new Transformation().width(300).crop("fit")).generate(i);
-						item.setImgURL(url);
-						GetImageProduct getImage = new GetImageProduct(ViewSalesActivity.this,url, item, adapter);
-						getImage.execute();	
-						productList.add(item);
-					}
-				}
-			}
-		}
-	}
-	private void GetSalesLoc(DataSnapshot data){
+	
+	private void GetSalesLoc(DataSnapshot data, final Location mCurrentLocation){
 		final String userKey = data.getKey();
 		Map<String, Object> saleUserMaps = (Map<String, Object>) data.getValue();
 		if(saleUserMaps.get("role").equals("sales")){
@@ -421,14 +359,28 @@ LocationListener{
 
 								Toast.makeText(getApplicationContext(), R.string.add_geofences_already_requested_error, Toast.LENGTH_LONG).show();
 							}
+							ViewBtn.setOnClickListener(new OnClickListener(){
+
+								@Override
+								public void onClick(View v) {
+									// TODO Auto-generated method stub
+									Intent intent = new Intent(ViewSalesActivity.this, ProductList_User.class);
+									intent.putExtra("userid", userKey);
+									intent.putExtra("key", user.getId());
+									startActivity(intent);
+								}
+								
+							});
 							gMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener(){
 	
 								@Override
 								public void onInfoWindowClick(final Marker marker) {
 									// TODO Auto-generated method stub
 									if(rl.getVisibility() == View.GONE){
-										GetSaleMemberDetail getSaleMem = new GetSaleMemberDetail(ViewSalesActivity.this, marker.getTitle());
-										getSaleMem.execute();
+										GoBtn.setVisibility(View.VISIBLE);
+										getSaler(marker.getTitle());
+										//GetSaleMemberDetail getSaleMem = new GetSaleMemberDetail(ViewSalesActivity.this, marker.getTitle());
+										//getSaleMem.execute();
 										final double lat = marker.getPosition().latitude;
 										final double lng = marker.getPosition().longitude;
 										if(favList.size() > 0){
@@ -488,8 +440,7 @@ LocationListener{
 											@Override
 											public void onClick(View view) {
 												// TODO Auto-generated method stub
-												Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?saddr="+lat+","+lng+"&daddr=1.379468,103.848559"));
-												
+												Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?saddr="+lat+","+lng+"&daddr="+mCurrentLocation.getLatitude()+","+ mCurrentLocation.getLongitude()));
 												intent.setClassName("com.google.android.apps.maps","com.google.android.maps.MapsActivity");
 												ViewSalesActivity.this.startActivityForResult(intent, 1);
 											}
@@ -577,5 +528,57 @@ LocationListener{
 	public String getSharedPrefernces(){
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ViewSalesActivity.this);
 		return pref.getString("userid", "null");
+	}
+	
+	private void getSaler(String title){
+		final String markerTitle = title;
+		ref = new Firebase("https://mmarketnyp.firebaseio.com/user");
+		cloudinary = new Cloudinary(Cloudinary.asMap(
+				"cloud_name","dfm9692pu",
+				"api_key", "443893967666533",
+				"api_secret", "uYlUVpAZK405EHc6CsrHF64VVlg"));
+		
+		ref.addValueEventListener(new ValueEventListener(){
+
+			@Override
+			public void onCancelled(FirebaseError error) {
+				// TODO Auto-generated method stub
+				Toast.makeText(ViewSalesActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+			}
+
+			@Override
+			public void onDataChange(DataSnapshot snapshot) {
+				// TODO Auto-generated method stub
+				
+				
+				Map<String, Object> usersMaps = (Map<String, Object>) snapshot.getValue();
+				
+				
+				
+				for(String i : usersMaps.keySet()){
+					
+					Map<String, Object> userMap = (Map<String, Object>) usersMaps.get(i);
+					
+					if(userMap.get("role").toString().equals("sales")){
+						if(userMap.get("title").toString().equals(markerTitle)){
+								String imgurl = cloudinary.url().format("jpg").transformation(new Transformation().width(1800).crop("fit")).generate(i);
+								
+								GetImage getImg = new GetImage();
+								getImg.imgurl = imgurl;
+								getImg.execute();	
+								
+								ViewSalesActivity.user.setTitle(userMap.get("title").toString());
+								ViewSalesActivity.user.setId(i);
+								ViewSalesActivity.user.setName(userMap.get("name").toString());
+								ViewSalesActivity.user.setEmail(userMap.get("email").toString());
+								ViewSalesActivity.user.setContact(Integer.parseInt(userMap.get("contact").toString()));
+						}
+					}
+				}
+				ViewSalesActivity.setUser();
+				
+			}
+			
+		});
 	}
 }	

@@ -28,6 +28,7 @@ public class ProductAdapter extends ArrayAdapter<Product> {
 	private Activity context;
 	private ArrayList<Product> resultArray;
 	public ImageView imgView;
+	private TextView txtTitle;
 	public ProductAdapter(Context context, ArrayList<Product> resultArray) {
 		super(context, R.layout.activity_product_adapter, resultArray);
 		// TODO Auto-generated constructor stub
@@ -41,15 +42,15 @@ public class ProductAdapter extends ArrayAdapter<Product> {
 		// TODO Auto-generated method stub
 		LayoutInflater inflater = context.getLayoutInflater();
 		View rowView = inflater.inflate(R.layout.activity_product_adapter, null, true);
-		TextView txtTitle = (TextView) rowView.findViewById(R.id.productTitle);
-		TextView txtPrice = (TextView) rowView.findViewById(R.id.productPrice);
-		TextView txtDetail = (TextView) rowView.findViewById(R.id.productDetail);
+		//TextView txtTitle = (TextView) rowView.findViewById(R.id.productTitle);
+
 		imgView = (ImageView) rowView.findViewById(R.id.productImg);
 		imgView.setImageBitmap(resultArray.get(position).getImage());
-		txtTitle.setText(resultArray.get(position).getName());
-		txtPrice.setText(Double.toString(resultArray.get(position).getPrice()));
-		txtDetail.setText(resultArray.get(position).getDetail());
 		
+		txtTitle = (TextView) rowView.findViewById(R.id.productTitle);
+	
+		txtTitle.setText(resultArray.get(position).getName());
+		txtTitle.setTextSize(25);
 		if(resultArray.get(position).getStatus().equals("active")){
 			rowView.setBackgroundColor(Color.LTGRAY);
 		}

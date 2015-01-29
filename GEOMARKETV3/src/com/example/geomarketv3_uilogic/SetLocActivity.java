@@ -89,7 +89,7 @@ LocationListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_set_loc);
 	
-		userid = userid = getSharedPrefernces();;
+		userid = getSharedPrefernces();
 		url = "https://mmarketnyp.firebaseio.com/user/" + userid;
 		ref = new Firebase(url+"/location");
 		MapFragment mf = (MapFragment) getFragmentManager().findFragmentById(R.id.map);

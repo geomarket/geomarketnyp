@@ -94,8 +94,12 @@
             android:label="@string/title_activity_view_fav_list" >
         </activity>
         <activity
-            android:name="com.example.geomarketv3.ViewProduct"
+            android:name="com.example.geomarketv3_uilogic.ViewProduct"
             android:label="@string/title_activity_view_product" >
+        </activity>
+        <activity
+            android:name="com.example.geomarketv3_uilogic.ProductList_User"
+            android:label="@string/title_activity_product_list__user" >
         </activity>
     </application>
 

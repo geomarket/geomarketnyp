@@ -8,6 +8,7 @@ public class Product {
 	private String imgURL;
 	private String status;
 	private Bitmap image;
+	private String salerID;
 	public Product(){
 		
 	}
@@ -57,6 +58,14 @@ public class Product {
 
 	public void setImage(Bitmap image) {
 		this.image = image;
+	}
+
+	public String getSalerID() {
+		return salerID;
+	}
+
+	public void setSalerID(String salerID) {
+		this.salerID = salerID;
 	}
 
 	

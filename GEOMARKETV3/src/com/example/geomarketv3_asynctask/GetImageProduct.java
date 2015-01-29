@@ -1,3 +1,4 @@
+
 package com.example.geomarketv3_asynctask;
 
 import java.io.IOException;
@@ -67,9 +68,10 @@ public class GetImageProduct extends AsyncTask<Void, Void, Void> {
 		    conn.connect();
 		 
 		    InputStream is = (InputStream) conn.getInputStream();
-		  
-		 
-		    return BitmapFactory.decodeStream(is);
+		    Bitmap bitmap = BitmapFactory.decodeStream(is);
+		    is.close();
+		    
+		    return bitmap;
 		 
 		  } catch (MalformedURLException e) {
 		    e.printStackTrace();

@@ -73,14 +73,12 @@
     	android:orientation="vertical"
     	android:layout_alignParentBottom="true">
 	    <com.beardedhen.androidbootstrap.BootstrapButton
-          		 android:id="@+id/loginBtn"
+          		 android:id="@+id/purchaseBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="54dp"
-                android:layout_marginLeft="60dp"
-                android:text="Login"
-                android:layout_below="@+id/passwordET"
+                android:text="Purchase"
                 bootstrapbutton:bb_icon_left="fa-sign-in"
+                 android:layout_marginTop="13dp"
                 android:layout_gravity="center"
                 bootstrapbutton:bb_roundedCorners="true"
                 bootstrapbutton:bb_type="primary" />

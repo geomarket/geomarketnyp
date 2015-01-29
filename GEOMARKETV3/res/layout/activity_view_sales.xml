@@ -59,17 +59,8 @@
 	                bootstrapbutton:bb_icon_left="fa-star"
 	                bootstrapbutton:bb_roundedCorners="true"
 	                bootstrapbutton:bb_type="primary" />
-    	<ListView
-        android:id="@+id/productlistview"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="5dp"
-        android:layout_below="@+id/titleTV"
-        android:background="@android:color/transparent"
-        android:cacheColorHint="@android:color/transparent"
-        android:divider="#CCCCCC"
-        android:dividerHeight="1dp"/>
+   		 
+   		 
     </RelativeLayout>
     	
     
@@ -120,32 +111,19 @@
 	        android:layout_below="@+id/emailTV"
 	        android:drawableLeft="@drawable/dot" />
 	    	
-	    	    <LinearLayout
-			    	android:layout_width="fill_parent"
-			    	android:layout_height="wrap_content"
-			    	android:orientation="vertical"
-			    	android:id="@+id/llviewproduct">
-			    		<ListView
-			    		    android:id="@+id/productList"
-			    		    android:layout_width="fill_parent"
-			    			android:layout_height="wrap_content"
-			    		    />
-	    	        </LinearLayout>
 	    	
-	    
-	        <com.beardedhen.androidbootstrap.BootstrapButton
-	          		 android:id="@+id/GoBtn"
-	                android:layout_width="fill_parent"
-	                android:layout_height="fill_parent"
-	                android:paddingLeft="@dimen/activity_horizontal_margin"
-	    			android:paddingRight="@dimen/activity_horizontal_margin"
-	    			android:paddingTop="@dimen/activity_horizontal_margin"
-	    			android:paddingBottom="@dimen/activity_horizontal_margin"
-	                android:text="Get There!!"
-	                android:layout_below="@+id/contactTV"
-	                bootstrapbutton:bb_icon_left="fa-sign-in"
-	                bootstrapbutton:bb_roundedCorners="true"
-	                bootstrapbutton:bb_type="primary" />
+	      <com.beardedhen.androidbootstrap.BootstrapButton
+          		 android:id="@+id/viewBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="View Product List"
+                bootstrapbutton:bb_icon_left="fa-sign-in"
+                android:layout_below="@+id/contactTV"
+                 android:layout_marginTop="13dp"
+                android:layout_gravity="center"
+                bootstrapbutton:bb_roundedCorners="true"
+                bootstrapbutton:bb_type="primary" />
+	       
 	    </RelativeLayout>
 	</LinearLayout>
 	</ScrollView>
@@ -162,5 +140,16 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         />
+    
+      <com.beardedhen.androidbootstrap.BootstrapButton
+	          		 android:id="@+id/GoBtn"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:paddingTop="@dimen/activity_horizontal_margin"
+	                android:paddingLeft="@dimen/activity_horizontal_margin"
+	                android:text="Go"
+	                bootstrapbutton:bb_icon_left="fa-road"
+	                bootstrapbutton:bb_roundedCorners="true"
+	                bootstrapbutton:bb_type="primary" />
 	</FrameLayout>
 </RelativeLayout>

@@ -5,7 +5,7 @@
     tools:context=".ProductList" >
 
     <ListView
-        android:id="@+id/productlistview"
+        android:id="@+id/productlistUserview"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:layout_marginBottom="10dp"
@@ -17,3 +17,4 @@
         android:paddingLeft="2dp"/>
 
 </RelativeLayout>
+
