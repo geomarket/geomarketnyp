@@ -39,7 +39,8 @@ public class ProductList_User extends Activity {
 		list = (ListView) findViewById(R.id.productlistUserview);
 		adapter = new ProductAdapter(this, productList);
 		list.setAdapter(adapter);
-		GetActiveProductList productList = new GetActiveProductList(this, userid, adapter);
+
+		GetActiveProductList productList = new GetActiveProductList(this, Userkey, adapter);
 		productList.execute();
 		
 		list.setOnItemClickListener(new OnItemClickListener(){

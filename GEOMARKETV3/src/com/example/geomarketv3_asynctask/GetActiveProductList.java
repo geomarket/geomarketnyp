@@ -25,7 +25,7 @@ public class GetActiveProductList extends AsyncTask<Object, Object, Object> {
 	private Firebase ref;
 	private Activity activity;
 	private Cloudinary cloudinary;
-	
+
 	public GetActiveProductList(Activity activity, String userid, ProductAdapter adapter){
 		this.activity = activity;
 		this.userid = userid;
@@ -53,6 +53,7 @@ public class GetActiveProductList extends AsyncTask<Object, Object, Object> {
 					Map<String, Object> productMap = (Map<String, Object>) productsMap.get(i);
 					
 						if(productMap.get("status").toString().equals("active")){
+							
 							String url = cloudinary.url().format("jpg").transformation(new Transformation().width(300).crop("fit")).generate(i);
 							Product product = new Product();
 							product.setId(i);

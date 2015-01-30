@@ -561,7 +561,7 @@ LocationListener{
 					
 					if(userMap.get("role").toString().equals("sales")){
 						if(userMap.get("title").toString().equals(markerTitle)){
-								String imgurl = cloudinary.url().format("jpg").transformation(new Transformation().width(1800).crop("fit")).generate(i);
+								String imgurl = cloudinary.url().format("jpg").transformation(new Transformation().width(imgIV.getWidth()).crop("fit")).generate(i);
 								
 								GetImage getImg = new GetImage();
 								getImg.imgurl = imgurl;

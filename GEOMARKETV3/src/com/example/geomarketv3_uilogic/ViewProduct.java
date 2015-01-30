@@ -1,10 +1,12 @@
 package com.example.geomarketv3_uilogic;
 
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -24,9 +26,14 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 import com.geomarketv3.entity.Product;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.app.Activity;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -45,11 +52,14 @@ public class ViewProduct extends Activity {
 	private LinearLayout llbtn;
 	private BootstrapButton purchaseBTN;
 	private Firebase ref;
+	public List<Product> productList;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_view_product);
-
+		Firebase.setAndroidContext(this);
+		productList = new ArrayList<Product>();
+		productList = GetArrayListSharedPreferenced();
 		System.out.println("saler " + product.getSalerID());
 		String url = "https://mmarketnyp.firebaseio.com/user/"+product.getSalerID()+"/product/"+product.getId();
 		System.out.println("url: " + url);
@@ -69,6 +79,7 @@ public class ViewProduct extends Activity {
 				Date date = new Date();
 				String formattedDate = curFormater.format(date);
 				Map<String, Object> productMaps =  (Map<String, Object>) data.getValue();
+				
 				if(productMaps.get(formattedDate) != null){
 					Map<String, Object> viewCountMap = (Map<String, Object>) productMaps.get(formattedDate);
 					int count = Integer.parseInt(viewCountMap.get("viewcount").toString()) + 1;
@@ -110,7 +121,12 @@ public class ViewProduct extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				
+				SaveArrayListSharedPreferenced(product);
+				List<Product> list = GetArrayListSharedPreferenced();
+				for(int i =0; i< list.size(); i++){
+						System.out.println("list size. " + list.size());
+			    	  System.out.println("list name " + list.get(i).getName());
+			      }
 			}
 			
 		});
@@ -132,6 +148,24 @@ public class ViewProduct extends Activity {
 	}
 	
 	
+	private void SaveArrayListSharedPreferenced(Product product){
+		
+		productList.add(product);
+		 SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
+		 Editor prefsEditor = appSharedPrefs.edit();
+		 Gson gson = new Gson();
+		 String json = gson.toJson(productList);
+		 prefsEditor.putString("MyProductArray", json);
+		 prefsEditor.commit(); 
+	}
 	
-
+	private List<Product> GetArrayListSharedPreferenced(){
+		 SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
+		 Editor prefsEditor = appSharedPrefs.edit();
+	      Gson gson = new Gson();
+	      String json = appSharedPrefs.getString("MyProductArray", null);
+	      Type type = new TypeToken<List<Product>>(){}.getType();
+	      List<Product> productList = gson.fromJson(json, type);
+	      return productList;
+	}
 }

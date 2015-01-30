@@ -26,6 +26,8 @@ public class GetImage extends AsyncTask<Object, Object, Object>{
 	        connection.setDoInput(true);
 	        connection.connect();
 	        InputStream input = connection.getInputStream();
+	        BitmapFactory.Options options = new BitmapFactory.Options();
+	        options.inSampleSize = 4;
 	        Bitmap myBitmap = BitmapFactory.decodeStream(input);
 	        input.close();
 	        ViewSalesActivity.bitImage = myBitmap;
@@ -38,6 +40,8 @@ public class GetImage extends AsyncTask<Object, Object, Object>{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			
+		}catch (OutOfMemoryError e) {
+			e.printStackTrace();
 		}
 		return null;
 	}
