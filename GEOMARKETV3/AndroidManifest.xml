@@ -101,6 +101,14 @@
             android:name="com.example.geomarketv3_uilogic.ProductList_User"
             android:label="@string/title_activity_product_list__user" >
         </activity>
+        <activity
+            android:name="com.example.geomarketv3_uilogic.ShoppingCart"
+            android:label="@string/title_activity_shopping_cart" >
+        </activity>
+        <activity
+            android:name="com.example.geomarketv3.ProductDetailAdapter"
+            android:label="@string/title_activity_product_detail_adapter" >
+        </activity>
     </application>
 
 </manifest>

@@ -6,29 +6,35 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import com.example.geomarketv3_fragment.SalesMemberFragment;
+import com.example.geomarketv3.ProductDetailAdapter;
 import com.example.geomarketv3_uilogic.ViewSalesActivity;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.widget.ImageView;
 
-public class GetImage extends AsyncTask<Object, Object, Object>{
-	
-	public String imgurl;
-	
+public class GetCartImage extends AsyncTask<Object, Object, Object>{
+	private String imgurl;
+	private ImageView img;
+	private Bitmap myBitmap;
+	public GetCartImage(String imgurl ,ImageView img){
+		this.imgurl = imgurl;
+		this.img = img;
+	}
 	@Override
-	protected Object doInBackground(Object... params) {
+	protected Object doInBackground(Object... arg0) {
 		// TODO Auto-generated method stub
 		try {
+			
 			URL url = new URL(imgurl);
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 	        connection.setDoInput(true);
 	        connection.connect();
 	        InputStream input = connection.getInputStream();
-	        Bitmap myBitmap = BitmapFactory.decodeStream(input);
+	        myBitmap = BitmapFactory.decodeStream(input);
 	        input.close();
-	        ViewSalesActivity.bitImage = myBitmap;
+	        
 	     
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
@@ -45,10 +51,11 @@ public class GetImage extends AsyncTask<Object, Object, Object>{
 	}
 
 	@Override
-	protected void onPostExecute(Object result) {
-		//SalesMemberFragment.activity.setImage();
-		ViewSalesActivity.setImage();
+	protected void onPostExecute(Object arg0) {
+		img.setImageBitmap(myBitmap);
 	}
+
+
 	
 	
 }

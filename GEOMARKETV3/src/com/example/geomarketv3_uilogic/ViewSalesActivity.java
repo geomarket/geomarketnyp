@@ -208,6 +208,11 @@ LocationListener{
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// TODO Auto-generated method stub
+		switch(item.getItemId()){
+		case R.id.action_cart:
+			Intent intent = new Intent(this, ShoppingCart.class);
+			startActivity(intent);
+		}
 		return super.onOptionsItemSelected(item);
 	}
 
@@ -233,7 +238,7 @@ LocationListener{
                 	CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), 16);
 					gMap.animateCamera(cameraUpdate); 
 					
-					 ref = new Firebase("https://mmarketnyp.firebaseio.com/user");
+					   ref = new Firebase("https://mmarketnyp.firebaseio.com/user");
 				       ref.addChildEventListener(new ChildEventListener(){
 
 						@Override
@@ -330,7 +335,6 @@ LocationListener{
 		final String userKey = data.getKey();
 		Map<String, Object> saleUserMaps = (Map<String, Object>) data.getValue();
 		if(saleUserMaps.get("role").equals("sales")){
-			
 			Map<String, Object> saleLocMaps = (Map<String, Object>) saleUserMaps.get("location");
 			if(saleLocMaps != null){
 				Date date = new Date();
@@ -581,4 +585,6 @@ LocationListener{
 			
 		});
 	}
+	
+	
 }	

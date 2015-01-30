@@ -43,6 +43,7 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ViewProduct extends Activity {
 	public static Product product = new Product();
@@ -60,9 +61,9 @@ public class ViewProduct extends Activity {
 		Firebase.setAndroidContext(this);
 		productList = new ArrayList<Product>();
 		productList = GetArrayListSharedPreferenced();
-		System.out.println("saler " + product.getSalerID());
+		
 		String url = "https://mmarketnyp.firebaseio.com/user/"+product.getSalerID()+"/product/"+product.getId();
-		System.out.println("url: " + url);
+	
 		ref = new Firebase(url);
 		ref.addListenerForSingleValueEvent(new ValueEventListener(){
 
@@ -122,11 +123,6 @@ public class ViewProduct extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				SaveArrayListSharedPreferenced(product);
-				List<Product> list = GetArrayListSharedPreferenced();
-				for(int i =0; i< list.size(); i++){
-						System.out.println("list size. " + list.size());
-			    	  System.out.println("list name " + list.get(i).getName());
-			      }
 			}
 			
 		});
@@ -157,6 +153,8 @@ public class ViewProduct extends Activity {
 		 String json = gson.toJson(productList);
 		 prefsEditor.putString("MyProductArray", json);
 		 prefsEditor.commit(); 
+		 Toast.makeText(ViewProduct.this, "Product add to cart", Toast.LENGTH_SHORT).show();
+		 ViewProduct.this.finish();
 	}
 	
 	private List<Product> GetArrayListSharedPreferenced(){
@@ -168,4 +166,6 @@ public class ViewProduct extends Activity {
 	      List<Product> productList = gson.fromJson(json, type);
 	      return productList;
 	}
+	
+	
 }

@@ -46,12 +46,10 @@ public class GetImageProduct extends AsyncTask<Void, Void, Void> {
 	@Override
 	protected void onPostExecute(Void result) {
 		adapter.add(product);
-		
 	}
 
 	@Override
 	protected void onPreExecute() {
-		
 		cloudinary  = new Cloudinary(Cloudinary.asMap(
 				"cloud_name","dfm9692pu",
 				"api_key", "443893967666533",
