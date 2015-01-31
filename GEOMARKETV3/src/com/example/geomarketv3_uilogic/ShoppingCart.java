@@ -102,6 +102,14 @@ public class ShoppingCart extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	
+	
+	@Override
+	public void onBackPressed() {
+		// TODO Auto-generated method stub
+		offshoppingcart();
+		super.onBackPressed();
+	}
 
 	private List<Product> GetArrayListSharedPreferenced(){
 		 SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
@@ -129,6 +137,7 @@ private void UploadArrayListTranscation(List<Product> productList){
 	}
 	SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
 	appSharedPrefs.edit().remove("MyProductArray").commit();
+	offshoppingcart();
 }
 private void updateTranscation(Product product){
 	SimpleDateFormat curFormater = new SimpleDateFormat("dd-MM-yyyy");
@@ -143,4 +152,7 @@ private void updateTranscation(Product product){
 	post1.put("productprice", Double.toString(product.getPrice()));
 	postRef.push().setValue(post1);
 	}
+private void offshoppingcart(){
+	this.finish();
+}
 }
