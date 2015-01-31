@@ -1,5 +1,6 @@
 package com.example.geomarketv3_uilogic;
 
+import java.lang.reflect.Type;
 import java.text.DateFormat;
 
 import java.text.SimpleDateFormat;
@@ -49,6 +50,9 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -210,8 +214,13 @@ LocationListener{
 		// TODO Auto-generated method stub
 		switch(item.getItemId()){
 		case R.id.action_cart:
-			Intent intent = new Intent(this, ShoppingCart.class);
-			startActivity(intent);
+			if(GetArrayListSharedPreferenced() != null){
+				Intent intent = new Intent(this, ShoppingCart.class);
+				intent.putExtra("userid", userid);
+				startActivity(intent);
+			}else{
+				Toast.makeText(getApplicationContext(), "You have nothing in your cart", Toast.LENGTH_SHORT).show();
+			}
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -516,7 +525,7 @@ LocationListener{
 		notifyBuilder.setContentText("Your favourite sale is on don't miss them!!");
 		notifyBuilder.setSmallIcon(R.drawable.ic_launcher);
 		notifyBuilder.setTicker("FAVOURITE SALES DETECED!!!!");
-		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(ViewSalesActivity.this, ViewSalesActivity.class), 0);
+		//PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(ViewSalesActivity.this, ViewSalesActivity.class), 0);
 		new Thread(new Runnable(){
 
 			@Override
@@ -586,5 +595,14 @@ LocationListener{
 		});
 	}
 	
+	private List<Product> GetArrayListSharedPreferenced(){
+		 SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
+		 Editor prefsEditor = appSharedPrefs.edit();
+	      Gson gson = new Gson();
+	      String json = appSharedPrefs.getString("MyProductArray", null);
+	      Type type = new TypeToken<List<Product>>(){}.getType();
+	      List<Product> productList = gson.fromJson(json, type);
+	      return productList;
+	}
 	
 }	

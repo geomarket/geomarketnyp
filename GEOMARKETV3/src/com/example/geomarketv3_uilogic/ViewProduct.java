@@ -60,7 +60,9 @@ public class ViewProduct extends Activity {
 		setContentView(R.layout.activity_view_product);
 		Firebase.setAndroidContext(this);
 		productList = new ArrayList<Product>();
-		productList = GetArrayListSharedPreferenced();
+		if(GetArrayListSharedPreferenced() != null){
+		productList.addAll(GetArrayListSharedPreferenced());
+		}
 		
 		String url = "https://mmarketnyp.firebaseio.com/user/"+product.getSalerID()+"/product/"+product.getId();
 	
@@ -122,6 +124,7 @@ public class ViewProduct extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				System.out.println(product.getName());
 				SaveArrayListSharedPreferenced(product);
 			}
 			
@@ -145,7 +148,7 @@ public class ViewProduct extends Activity {
 	
 	
 	private void SaveArrayListSharedPreferenced(Product product){
-		
+	
 		productList.add(product);
 		 SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
 		 Editor prefsEditor = appSharedPrefs.edit();
