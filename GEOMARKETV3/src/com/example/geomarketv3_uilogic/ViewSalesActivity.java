@@ -2,6 +2,7 @@ package com.example.geomarketv3_uilogic;
 
 import java.lang.reflect.Type;
 import java.text.DateFormat;
+import java.text.ParseException;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -347,18 +348,23 @@ LocationListener{
 			Map<String, Object> saleLocMaps = (Map<String, Object>) saleUserMaps.get("location");
 			if(saleLocMaps != null){
 				Date date = new Date();
-				DateFormat dateFormat = new SimpleDateFormat("dd/M/yyyy");
+				DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 				
 				for(String i: saleLocMaps.keySet()){
 						
 						Map<String, Object> saleLocMap = (Map<String, Object>) saleLocMaps.get(i);
-						
-						if(dateFormat.format(date).toString().equals(saleLocMap.get("date").toString())){
+							String currentDate = dateFormat.format(date);
+							
+							Long epoch = Long.parseLong(saleLocMap.get("date").toString());
+							Date convertdate = new Date(epoch);
+							String saleDate = dateFormat.format(convertdate);
+							
+						if(currentDate.equals(saleDate)){
 							LatLng latlng = new LatLng(Double.parseDouble(saleLocMap.get("lat").toString()), Double.parseDouble(saleLocMap.get("lng").toString()));
 							
 							marker = gMap.addMarker(new MarkerOptions().position(latlng));
 							marker.setTitle(saleUserMaps.get("title").toString());
-							marker.setSnippet("sales on Date: " + saleLocMap.get("date").toString());
+							marker.setSnippet("sales on Date: " + saleDate);
 							
 							marker.showInfoWindow();
 							markerList.add(marker);
@@ -392,8 +398,7 @@ LocationListener{
 									if(rl.getVisibility() == View.GONE){
 										GoBtn.setVisibility(View.VISIBLE);
 										getSaler(marker.getTitle());
-										//GetSaleMemberDetail getSaleMem = new GetSaleMemberDetail(ViewSalesActivity.this, marker.getTitle());
-										//getSaleMem.execute();
+										
 										final double lat = marker.getPosition().latitude;
 										final double lng = marker.getPosition().longitude;
 										if(favList.size() > 0){

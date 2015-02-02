@@ -5,8 +5,12 @@ import java.io.IOException;
 
 
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -393,8 +397,20 @@ LocationListener {
 					if(mYear < year || mYear == year){
 						if(mMonth < monthOfYear || mMonth == monthOfYear){
 							if(mDay < dayOfMonth || mDay == dayOfMonth){
+								
 								String date = dayOfMonth+"/"+(monthOfYear+1)+"/"+ year;
-								updateMap.put("date", date);
+								SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+								Date selected_date;
+								long epoch = 0;
+								try {
+									selected_date = sdf.parse(date);
+									epoch = selected_date.getTime();
+								} catch (ParseException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+								
+								updateMap.put("date", epoch);
 								updateMap.put("markertitle", marker.getTitle());
 								ref.push().setValue(updateMap);
 							}else{

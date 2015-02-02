@@ -5,6 +5,7 @@ import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -78,21 +79,31 @@ public class ViewProduct extends Activity {
 			@Override
 			public void onDataChange(DataSnapshot data) {
 				// TODO Auto-generated method stub
-				SimpleDateFormat curFormater = new SimpleDateFormat("dd-MM-yyyy"); 
+				SimpleDateFormat curFormater = new SimpleDateFormat("dd/MM/yyyy"); 
 				Date date = new Date();
 				String formattedDate = curFormater.format(date);
+				Long epoch = null;
+				try {
+					Date strdate = curFormater.parse(formattedDate);
+					epoch = strdate.getTime();
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				Map<String, Object> productMaps =  (Map<String, Object>) data.getValue();
-				
-				if(productMaps.get(formattedDate) != null){
+				System.out.println("has date " + productMaps.get(epoch.toString()));
+				if(productMaps.get(epoch.toString()) != null){
+					System.out.println("date " + productMaps.get(epoch.toString()));
 					Map<String, Object> viewCountMap = (Map<String, Object>) productMaps.get(formattedDate);
-					int count = Integer.parseInt(viewCountMap.get("viewcount").toString()) + 1;
-					Firebase postRef = ref.child(formattedDate);
+					Map<String, Object> viewcount = (Map<String, Object>) productMaps.get(epoch.toString());
+					int count = Integer.parseInt(viewcount.get("viewcount").toString()) + 1;
+					Firebase postRef = ref.child(epoch.toString());
 					Map<String, String> postView = new HashMap<String, String>();
 					postView.put("viewcount", Integer.toString(count));
 					postRef.setValue(postView);
 				}else{
-					System.out.println("null" +formattedDate);
-					Firebase postRef = ref.child(formattedDate);
+					System.out.println("null " +epoch);
+					Firebase postRef = ref.child(epoch.toString());
 					Map<String, String> postView = new HashMap<String, String>();
 					postView.put("viewcount", "1");
 					postRef.setValue(postView);

@@ -1,6 +1,7 @@
 package com.example.geomarketv3_uilogic;
 
 import java.lang.reflect.Type;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -143,8 +144,18 @@ private void updateTranscation(Product product){
 	SimpleDateFormat curFormater = new SimpleDateFormat("dd-MM-yyyy");
 	Date date = new Date();
 	currentDate = curFormater.format(date);
+	Long epoch = null;
+	try {
+		Date convertpcdate = curFormater.parse(currentDate);
+		epoch = convertpcdate.getTime();
+	} catch (ParseException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	
+	
 	ref = new Firebase(url);
-	Firebase postRef = ref.child(currentDate);
+	Firebase postRef = ref.child(epoch.toString());
 	Map<String, String> post1 = new HashMap<String, String>();
 	post1.put("salerid", product.getSalerID());
 	post1.put("buyerid", userid);
