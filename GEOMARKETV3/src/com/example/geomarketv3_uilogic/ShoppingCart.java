@@ -141,7 +141,7 @@ private void UploadArrayListTranscation(List<Product> productList){
 	offshoppingcart();
 }
 private void updateTranscation(Product product){
-	SimpleDateFormat curFormater = new SimpleDateFormat("dd-MM-yyyy");
+	SimpleDateFormat curFormater = new SimpleDateFormat("dd/MM/yyyy");
 	Date date = new Date();
 	currentDate = curFormater.format(date);
 	Long epoch = null;

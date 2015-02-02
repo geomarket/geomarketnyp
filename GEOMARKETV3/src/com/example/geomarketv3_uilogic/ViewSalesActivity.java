@@ -428,10 +428,20 @@ LocationListener{
 															updateFav = new Firebase(url);
 															Firebase FavRef = updateFav.child("favourite");
 															Date date = new Date();
-															SimpleDateFormat curFormater = new SimpleDateFormat("dd/M/yyyy"); 
+															SimpleDateFormat curFormater = new SimpleDateFormat("dd/MM/yyyy");
+															String strDate = curFormater.format(date);
+															Long epoch = null;
+															try {
+																Date favDate = curFormater.parse(strDate);
+																epoch = favDate.getTime();
+															} catch (ParseException e) {
+																// TODO Auto-generated catch block
+																e.printStackTrace();
+															}
+															
 															Map<String, String> favMap = new HashMap<String, String>();
 															favMap.put("userfav", userKey);
-															favMap.put("date", curFormater.format(date));
+															favMap.put("date", epoch.toString());
 															FavRef.push().setValue(favMap);
 															FavBtn.setBootstrapType("success");
 														}
