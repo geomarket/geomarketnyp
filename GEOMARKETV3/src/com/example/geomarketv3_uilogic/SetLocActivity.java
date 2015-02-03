@@ -253,7 +253,6 @@ LocationListener {
 			@Override
 			public void onMarkerDragEnd(Marker marker) {
 				// TODO Auto-generated method stub
-				System.out.println(marker.getTitle());
 				Map<String, Object> updateMap = new HashMap<String, Object>();
 				updateMap.put("lat", marker.getPosition().latitude);
 				updateMap.put("lng", marker.getPosition().longitude);

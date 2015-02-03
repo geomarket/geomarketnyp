@@ -62,7 +62,7 @@ public class ViewProduct extends Activity {
 		Firebase.setAndroidContext(this);
 		productList = new ArrayList<Product>();
 		if(GetArrayListSharedPreferenced() != null){
-		productList.addAll(GetArrayListSharedPreferenced());
+			productList.addAll(GetArrayListSharedPreferenced());
 		}
 		
 		String url = "https://mmarketnyp.firebaseio.com/user/"+product.getSalerID()+"/product/"+product.getId();
@@ -91,9 +91,8 @@ public class ViewProduct extends Activity {
 					e.printStackTrace();
 				}
 				Map<String, Object> productMaps =  (Map<String, Object>) data.getValue();
-				System.out.println("has date " + productMaps.get(epoch.toString()));
 				if(productMaps.get(epoch.toString()) != null){
-					System.out.println("date " + productMaps.get(epoch.toString()));
+					
 					Map<String, Object> viewCountMap = (Map<String, Object>) productMaps.get(formattedDate);
 					Map<String, Object> viewcount = (Map<String, Object>) productMaps.get(epoch.toString());
 					int count = Integer.parseInt(viewcount.get("viewcount").toString()) + 1;

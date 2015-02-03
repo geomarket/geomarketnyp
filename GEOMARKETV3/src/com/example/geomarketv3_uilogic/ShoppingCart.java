@@ -141,19 +141,17 @@ private void UploadArrayListTranscation(List<Product> productList){
 	offshoppingcart();
 }
 private void updateTranscation(Product product){
-	SimpleDateFormat curFormater = new SimpleDateFormat("dd/MM/yyyy");
 	Date date = new Date();
-	currentDate = curFormater.format(date);
-	Long epoch = null;
+	SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
+	String newstring = formatter.format(date);
+	Date date2 = null;
 	try {
-		Date convertpcdate = curFormater.parse(currentDate);
-		epoch = convertpcdate.getTime();
+		date2 = formatter.parse(newstring);
 	} catch (ParseException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
-	
-	
+	Long epoch = date2.getTime();
 	ref = new Firebase(url);
 	Firebase postRef = ref.child(epoch.toString());
 	Map<String, String> post1 = new HashMap<String, String>();
