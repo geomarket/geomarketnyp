@@ -46,7 +46,7 @@ public class Login extends Activity {
 		passwordET.setTextColor(getResources().getColor(R.color.abs__background_holo_dark));
 		emailET.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
 		//emailET.setText("fuhchang123@gmail.com");
-		emailET.setText("test123@gmail.com");
+		emailET.setText("ben@gmail.com");
 		passwordET.setText("123123");
 		btnregister = (BootstrapButton) findViewById(R.id.registerBtn);
 		btnlogin = (BootstrapButton) findViewById(R.id.loginBtn);
