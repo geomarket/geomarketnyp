@@ -158,6 +158,7 @@ private void updateTranscation(Product product){
 	post1.put("salerid", product.getSalerID());
 	post1.put("buyerid", userid);
 	post1.put("productid", product.getId());
+	post1.put("productname", product.getName());
 	post1.put("productprice", Double.toString(product.getPrice()));
 	postRef.push().setValue(post1);
 	}
