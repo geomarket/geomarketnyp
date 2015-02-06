@@ -296,9 +296,9 @@ LocationListener{
 						}
 
 						@Override
-						public void onChildRemoved(DataSnapshot arg0) {
+						public void onChildRemoved(DataSnapshot snapshot) {
 							// TODO Auto-generated method stub
-							
+							System.out.println(snapshot);
 						}
 				    	   
 				       });
