@@ -1,6 +1,7 @@
 package com.example.geomarketv3_uilogic;
 
 import java.lang.reflect.Type;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 
@@ -64,6 +65,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationCompat;
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -84,6 +86,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
 import android.widget.SearchView.OnQueryTextListener;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -222,6 +225,21 @@ LocationListener{
 			}else{
 				Toast.makeText(getApplicationContext(), "You have nothing in your cart", Toast.LENGTH_SHORT).show();
 			}
+			break;
+		case R.id.action_view_date:
+			DatePickerDialog dpd = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+				
+				@Override
+				public void onDateSet(DatePicker view, int year, int monthOfYear,int dayOfMonth) {
+					// TODO Auto-generated method stub
+					gMap.clear();
+					markerList.clear();
+					GetSalesLocByDate(year,monthOfYear+1, dayOfMonth);
+				}
+			}, 2015, 1, 11);
+			
+			dpd.show();
+			break;
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -482,6 +500,170 @@ LocationListener{
 		
 	}
 	
+	private void GetSalesLocByDate(int year, int month, int day){
+		ref = new Firebase("https://mmarketnyp.firebaseio.com/user");
+		final int Year = year;
+		final int Month = month;
+		final int Day = day;
+		ref.addChildEventListener(new ChildEventListener(){
+
+			@Override
+			public void onCancelled(FirebaseError arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onChildAdded(DataSnapshot snapshot, String str) {
+				// TODO Auto-generated method stub
+				final String userKey = snapshot.getKey();
+				Map<String, Object> UserMaps = (Map<String, Object>) snapshot.getValue();
+				if(UserMaps.get("role").equals("sales")){
+					for(String i : UserMaps.keySet()){
+						if(i.equals("location")){
+							Map<String, Object> locMaps = (Map<String, Object>) UserMaps.get(i);
+							for(String loc : locMaps.keySet()){
+								Map<String, Object> locMap = (Map<String, Object>) locMaps.get(loc);
+								DateFormat dF = new SimpleDateFormat("dd/mm/yyyy");
+								String strDate = null;
+								if(Month< 10){
+									strDate = Day+"/0"+Month+"/"+Year;
+								}else{
+									strDate = Day+"/"+Month+"/"+Year;
+								}
+								Date date = new Date(Long.parseLong(locMap.get("date").toString()));
+								String strdate = dF.format(date);
+								if(strdate.equals(strDate)){
+									LatLng latlng = new LatLng(Double.parseDouble(locMap.get("lat").toString()), Double.parseDouble(locMap.get("lng").toString()));
+									marker = gMap.addMarker(new MarkerOptions().position(latlng));
+									marker.setTitle(UserMaps.get("title").toString());
+									marker.setSnippet("sales on Date: " + strdate);
+									
+									marker.showInfoWindow();
+									markerList.add(marker);
+									
+									gMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener(){
+										
+										@Override
+										public void onInfoWindowClick(final Marker marker) {
+											// TODO Auto-generated method stub
+											if(rl.getVisibility() == View.GONE){
+												GoBtn.setVisibility(View.VISIBLE);
+												getSaler(marker.getTitle());
+												
+												final double lat = marker.getPosition().latitude;
+												final double lng = marker.getPosition().longitude;
+												if(favList.size() > 0){
+													for(int a=0; a<favList.size(); a++){
+														if(favList.get(a).getFavID().equals(userKey)){
+															setNotification(marker.getTitle());
+															FavBtn.setBootstrapType("success");
+														}
+													}
+												}
+												
+												ViewBtn.setOnClickListener(new OnClickListener(){
+
+													@Override
+													public void onClick(View v) {
+														// TODO Auto-generated method stub
+														Intent intent = new Intent(ViewSalesActivity.this, ProductList_User.class);
+														intent.putExtra("userid", userKey);
+														intent.putExtra("key", user.getId());
+														startActivity(intent);
+													}
+													
+												});
+												
+												FavBtn.setOnClickListener(new OnClickListener(){
+
+													@Override
+													public void onClick(View view) {
+														// TODO Auto-generated method stub
+														if(favList.size() > 0){
+															for(int a=0; a<favList.size(); a++){
+																if(favList.get(a).getFavID().equals(userKey)){
+																	String url = "https://mmarketnyp.firebaseio.com/user/"+ userid+"/favourite/" + favList.get(a).getId();
+																	updateFav = new Firebase(url);
+																	updateFav.removeValue();
+																	favList.remove(a);
+																	FavBtn.setBootstrapType("primary");
+																}else{
+																	String url = "https://mmarketnyp.firebaseio.com/user/"+ userid;
+																	updateFav = new Firebase(url);
+																	Firebase FavRef = updateFav.child("favourite");
+																	Date date = new Date();
+																	
+																		Long epoch = date.getTime();
+																	
+																	
+																	Map<String, String> favMap = new HashMap<String, String>();
+																	favMap.put("userfav", userKey);
+																	favMap.put("date", epoch.toString());
+																	FavRef.push().setValue(favMap);
+																	FavBtn.setBootstrapType("success");
+																}
+															}
+														}else{
+															String url = "https://mmarketnyp.firebaseio.com/user/"+ userid;
+															updateFav = new Firebase(url);
+															Firebase FavRef = updateFav.child("favourite");
+															Date date = new Date();
+															SimpleDateFormat curFormater = new SimpleDateFormat("dd/M/yyyy"); 
+															Map<String, String> favMap = new HashMap<String, String>();
+															favMap.put("userfav", userKey);
+															favMap.put("date", curFormater.format(date));
+															FavRef.push().setValue(favMap);
+															FavBtn.setBootstrapType("success");
+														}
+													}
+										        	
+										        });
+												
+												
+												GoBtn.setOnClickListener(new OnClickListener(){
+
+													@Override
+													public void onClick(View view) {
+														// TODO Auto-generated method stub
+														Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?saddr="+lat+","+lng+"&daddr="+mCurrentLocation.getLatitude()+","+ mCurrentLocation.getLongitude()));
+														intent.setClassName("com.google.android.apps.maps","com.google.android.maps.MapsActivity");
+														ViewSalesActivity.this.startActivityForResult(intent, 1);
+													}
+										        	
+										        });
+												rl.setVisibility(View.VISIBLE);
+											}
+										}
+										
+									});
+								}
+							}
+						}
+					}
+				}
+			}	
+
+			@Override
+			public void onChildChanged(DataSnapshot arg0, String arg1) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onChildMoved(DataSnapshot arg0, String arg1) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onChildRemoved(DataSnapshot arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
+	}
 	private void getFav(String userid, final ArrayList<FavItem> favList){
 		String url = "https://mmarketnyp.firebaseio.com/user/"+ userid+"/favourite";
 		Firebase ref = new Firebase(url);

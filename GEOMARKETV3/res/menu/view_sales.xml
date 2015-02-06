@@ -12,5 +12,10 @@
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="@string/action_cart"/>
+    <item
+        android:id="@+id/action_view_date"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/action_view_date"/>
 
 </menu>
