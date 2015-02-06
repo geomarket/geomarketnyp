@@ -65,12 +65,14 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationCompat;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -338,7 +340,26 @@ LocationListener{
 			rl.setVisibility(View.GONE);
 			GoBtn.setVisibility(View.GONE);
 		}else{
-			Toast.makeText(getApplicationContext(), "You wan to quit? not yet done ahahaha", Toast.LENGTH_SHORT).show();
+			AlertDialog.Builder builder = new AlertDialog.Builder(ViewSalesActivity.this);
+			DialogInterface.OnClickListener removedialogClickListener = new DialogInterface.OnClickListener() {
+
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+					switch(which){
+					 case DialogInterface.BUTTON_POSITIVE:
+						 SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ViewSalesActivity.this);
+						 pref.getAll().clear();
+						 	Intent intent = new Intent(ViewSalesActivity.this, Login.class);
+						 	startActivity(intent);
+						 break;
+					 case DialogInterface.BUTTON_NEGATIVE:
+						 
+						 break;
+					}
+				}
+			};
+			builder.setMessage("Do you wish log out?").setPositiveButton("Yes", removedialogClickListener).setNegativeButton("No", removedialogClickListener).show();
 		}
 		
 	}

@@ -453,6 +453,30 @@ LocationListener {
 	}
 	
 	
+	@Override
+	public void onBackPressed() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(SetLocActivity.this);
+		DialogInterface.OnClickListener removedialogClickListener = new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				switch(which){
+				 case DialogInterface.BUTTON_POSITIVE:
+					 SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(SetLocActivity.this);
+					 pref.getAll().clear();
+					 	Intent intent = new Intent(SetLocActivity.this, Login.class);
+					 	startActivity(intent);
+					 break;
+				 case DialogInterface.BUTTON_NEGATIVE:
+					 
+					 break;
+				}
+			}
+		};
+		builder.setMessage("Do you wish log out?").setPositiveButton("Yes", removedialogClickListener).setNegativeButton("No", removedialogClickListener).show();
+	}
+
 	public String getSharedPrefernces(){
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(SetLocActivity.this);
 		return pref.getString("userid", "null");
