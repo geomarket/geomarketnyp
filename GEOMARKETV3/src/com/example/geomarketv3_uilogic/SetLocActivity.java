@@ -399,12 +399,15 @@ LocationListener {
 							if(mDay < dayOfMonth || mDay == dayOfMonth){
 								
 								String date = dayOfMonth+"/"+(monthOfYear+1)+"/"+ year;
+								System.out.println(date);
 								SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 								Date selected_date;
 								long epoch = 0;
 								try {
 									selected_date = sdf.parse(date);
+									System.out.println(selected_date);
 									epoch = selected_date.getTime();
+									System.out.println(epoch);
 								} catch (ParseException e) {
 									// TODO Auto-generated catch block
 									e.printStackTrace();

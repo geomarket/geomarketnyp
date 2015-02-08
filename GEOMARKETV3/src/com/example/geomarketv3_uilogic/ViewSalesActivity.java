@@ -545,15 +545,23 @@ LocationListener{
 							Map<String, Object> locMaps = (Map<String, Object>) UserMaps.get(i);
 							for(String loc : locMaps.keySet()){
 								Map<String, Object> locMap = (Map<String, Object>) locMaps.get(loc);
-								DateFormat dF = new SimpleDateFormat("dd/mm/yyyy");
+								DateFormat dF = new SimpleDateFormat("dd/MM/yyyy");
 								String strDate = null;
+								String m = Integer.toString(Month);
+								String d = Integer.toString(Day);
+								System.out.println("2 " +  Month);
 								if(Month< 10){
-									strDate = Day+"/0"+Month+"/"+Year;
-								}else{
-									strDate = Day+"/"+Month+"/"+Year;
+									m = "0"+Month;
+									
 								}
+								if(Day< 10){
+									d = "0"+Day;
+								}
+								strDate = d+"/"+m+"/"+Year;
 								Date date = new Date(Long.parseLong(locMap.get("date").toString()));
 								String strdate = dF.format(date);
+								System.out.println("2 " +  strdate);
+								System.out.println("1 " + strDate);
 								if(strdate.equals(strDate)){
 									LatLng latlng = new LatLng(Double.parseDouble(locMap.get("lat").toString()), Double.parseDouble(locMap.get("lng").toString()));
 									marker = gMap.addMarker(new MarkerOptions().position(latlng));
