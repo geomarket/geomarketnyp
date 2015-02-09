@@ -28,11 +28,13 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.view.Menu;
 import android.view.View;
 import android.view.animation.Transformation;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
@@ -57,7 +59,42 @@ public class ProductList extends Activity {
 		
 		 GetProductList productList = new GetProductList(this, userid, adapter);
 		 productList.execute();
-		 
+		 list.setOnItemLongClickListener(new OnItemLongClickListener(){
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,final int position, long arg3) {
+				// TODO Auto-generated method stub
+				AlertDialog.Builder builder = new AlertDialog.Builder(ProductList.this);
+				DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+				    @Override
+				    public void onClick(DialogInterface dialog, int which) {
+				        switch (which){
+				        case DialogInterface.BUTTON_POSITIVE:
+				            //Yes button clicked
+				        	Product product = new Product();
+				        	product.setId(adapter.getItem(position).getId());
+				        	product.setName(adapter.getItem(position).getName());
+				        	product.setPrice(adapter.getItem(position).getPrice());
+				        	product.setDetail(adapter.getItem(position).getDetail());
+				        	Intent intent = new Intent(ProductList.this, UpdateProductActivity.class);
+				        	UpdateProductActivity.product = product;
+				        	intent.putExtra("userid", userid);
+				        	startActivity(intent);
+				            break;
+
+				        case DialogInterface.BUTTON_NEGATIVE:
+				            //No button clicked
+				        	
+				            break;
+				        }
+				    }
+				};
+				
+				builder.setMessage("You wish to update this product?").setPositiveButton("yes", dialogClickListener).setNegativeButton("No", dialogClickListener).show();
+				return false;
+			}
+			 
+		 });
 		 list.setOnItemClickListener(new OnItemClickListener(){
 
 			@Override

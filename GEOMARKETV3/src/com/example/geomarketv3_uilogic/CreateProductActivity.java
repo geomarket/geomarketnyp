@@ -53,7 +53,7 @@ public class CreateProductActivity extends Activity {
 		DescET = (EditText) findViewById(R.id.DescET);
 		
 		userid = getIntent().getStringExtra("userid");
-		System.out.println("id 1 " + userid);
+		
 		uploadBTN = (BootstrapButton) findViewById(R.id.uploadBtn);
 		uploadBTN.setOnClickListener(new OnClickListener(){
 
