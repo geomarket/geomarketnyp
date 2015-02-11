@@ -19,6 +19,7 @@ import java.util.Map;
 
 import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.example.geomarketv3.R;
+import com.example.geomarketv3_asynctask.GetImageToIcon;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -39,6 +40,7 @@ import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -59,6 +61,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -81,6 +84,7 @@ LocationListener {
 	private String userid;
 	private String url;
 	private double lat, lng;
+	public Bitmap iconImg;
 	private Marker marker;
 	private ArrayList<Marker> markerList;
     private LocationClient mLocationClient;
@@ -89,14 +93,18 @@ LocationListener {
     private GeofenceRequester mGeofenceRequester;
 	private SimpleGeofence UiGeofence;
 	List<Geofence> mCurrentGeofences;
+	private ArrayList<Integer> typeList;
+	private int iconType;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_set_loc);
-	
+		typeList = new ArrayList<Integer>();
+		typeList.add(R.drawable.food);
+		typeList.add(R.drawable.clothes);
 		userid = getSharedPrefernces();
 		url = "https://mmarketnyp.firebaseio.com/user/" + userid;
-		ref = new Firebase(url+"/location");
+		ref = new Firebase(url);
 		MapFragment mf = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
 		gMap = mf.getMap();
 		gMap.setMyLocationEnabled(true);
@@ -114,12 +122,21 @@ LocationListener {
 				// TODO Auto-generated method stub
 				if(snapshot.getValue() != null){
 					Map<String, Object> updateMaps = (Map<String, Object>) snapshot.getValue();
-					for(String i: updateMaps.keySet()){
-						Map<String, Object> updateMap = (Map<String, Object>) updateMaps.get(i);
+					System.out.println(updateMaps.get("type"));
+					if(updateMaps.get("type").toString().equals("food")){
+						iconType = typeList.get(0);
+					}else if (updateMaps.get("type").toString().equals("clothes")){
+						iconType = typeList.get(1);
+					}
+					Map<String, Object> locMaps = (Map<String, Object>) updateMaps.get("location");
+					for(String i: locMaps.keySet()){
+						Map<String, Object> updateMap = (Map<String, Object>) locMaps.get(i);
+						
 						Geocoder geocoder = new Geocoder(SetLocActivity.this, Locale.getDefault()); 
+						
 			        	 try {
 							List<Address> address = geocoder.getFromLocation(Double.parseDouble(updateMap.get("lat").toString()), Double.parseDouble(updateMap.get("lng").toString()), 1);
-							marker = gMap.addMarker(new MarkerOptions().position(new LatLng(address.get(0).getLatitude(), address.get(0).getLongitude())).title(updateMap.get("markertitle").toString()).snippet(address.get(0).getAddressLine(0) + " " + address.get(0).getAddressLine(1)));
+							marker = gMap.addMarker(new MarkerOptions().position(new LatLng(address.get(0).getLatitude(), address.get(0).getLongitude())).title(updateMap.get("markertitle").toString()).snippet(address.get(0).getAddressLine(0) + " " + address.get(0).getAddressLine(1)).icon(BitmapDescriptorFactory.fromResource(iconType)));
 							marker.showInfoWindow();
 							markerList.add(marker);
 							
@@ -151,17 +168,18 @@ LocationListener {
 				        case DialogInterface.BUTTON_POSITIVE:
 				            //Yes button clicked
 				        	 Geocoder geocoder = new Geocoder(SetLocActivity.this, Locale.getDefault()); 
-				        	 try {
-								List<Address> address = geocoder.getFromLocation(setlatlng.latitude, setlatlng.longitude, 1);
-								marker = gMap.addMarker(new MarkerOptions().position(setlatlng).title("marker"+ (markerList.size()+1)).snippet(address.get(0).getAddressLine(0) + " " + address.get(0).getAddressLine(1)));
-								marker.showInfoWindow();
-								markerList.add(marker);
-								getDate(ref, marker);
-								
+				        	 List<Address> address;
+				        	 
+							try {
+								address = geocoder.getFromLocation( setlatlng.latitude,  setlatlng.longitude, 1);
+								LatLng latlng = new LatLng(address.get(0).getLatitude(), address.get(0).getLongitude());
+								getDate(ref, latlng);
 							} catch (IOException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
+								
+	
 				        	
 				            break;
 
@@ -377,7 +395,7 @@ LocationListener {
 		mLocationClient.disconnect();
 	}
 
-	public String getDate(final Firebase ref, final Marker marker){
+	public String getDate(final Firebase ref, final LatLng latlng){
 		
 		Calendar c = Calendar.getInstance();
 		final int mYear = c.get(Calendar.YEAR);
@@ -385,8 +403,7 @@ LocationListener {
 		final int mDay = c.get(Calendar.DAY_OF_MONTH);
     
         	final Map<String, Object> updateMap = new HashMap<String, Object>();
-        	updateMap.put("lat", marker.getPosition().latitude);
-        	updateMap.put("lng", marker.getPosition().longitude);
+        	
 			DatePickerDialog dpd = new DatePickerDialog(SetLocActivity.this,  new DatePickerDialog.OnDateSetListener() {
 				
 				@Override
@@ -403,12 +420,21 @@ LocationListener {
 								SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 								Date selected_date;
 								long epoch = 0;
+								 Geocoder geocoder = new Geocoder(SetLocActivity.this, Locale.getDefault()); 
 								try {
 									selected_date = sdf.parse(date);
-									System.out.println(selected_date);
+									List<Address> address = geocoder.getFromLocation(latlng.latitude, latlng.longitude, 1);
+									marker = gMap.addMarker(new MarkerOptions().position(latlng).title("marker"+ (markerList.size()+1)+ " "+ date).snippet(address.get(0).getAddressLine(0) + " " + address.get(0).getAddressLine(1)).icon(BitmapDescriptorFactory.fromResource(iconType)));
+									marker.showInfoWindow();
+									markerList.add(marker);
+									updateMap.put("lat", marker.getPosition().latitude);
+						        	updateMap.put("lng", marker.getPosition().longitude);
 									epoch = selected_date.getTime();
-									System.out.println(epoch);
+									
 								} catch (ParseException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								} catch (IOException e) {
 									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}

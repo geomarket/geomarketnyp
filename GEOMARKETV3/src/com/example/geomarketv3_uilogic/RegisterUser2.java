@@ -35,6 +35,7 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
@@ -42,19 +43,26 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 import android.widget.ImageView.ScaleType;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 
 public class RegisterUser2 extends Activity {
 	private EditText titleET, nameET, contactET, companyET;
 	private BootstrapButton uploadbtn;
+	private Spinner typeSelector;
 	private ImageView imgView;
 	private String role;
 	private Uri selectedImage;
 	private Bitmap Image = null;
 	private String uriOfImage = null;
+	private String selectedType = null;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -63,6 +71,24 @@ public class RegisterUser2 extends Activity {
 		Resources res = getResources();
 		Drawable drawable = res.getDrawable(R.drawable.bg1);
 		rLayout.setBackgroundDrawable(drawable);
+		typeSelector = (Spinner) findViewById(R.id.spinnerType);
+		typeSelector.setBackgroundColor(Color.WHITE);
+		typeSelector.setOnItemSelectedListener(new OnItemSelectedListener(){
+
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View arg1,
+					int position, long arg3) {
+				// TODO Auto-generated method stub
+				setSelectedType(typeSelector.getItemAtPosition(position).toString());
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		
+		});
 		titleET = (EditText) findViewById(R.id.titleET);
 		nameET = (EditText) findViewById(R.id.nameET);
 		contactET = (EditText) findViewById(R.id.contactET);
@@ -332,5 +358,13 @@ public class RegisterUser2 extends Activity {
 	    inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
 	    String path = Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
 	    return Uri.parse(path);
+	}
+
+	public String getSelectedType() {
+		return selectedType;
+	}
+
+	public void setSelectedType(String selectedType) {
+		this.selectedType = selectedType;
 	}
 }

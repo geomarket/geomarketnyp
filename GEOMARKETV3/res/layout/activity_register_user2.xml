@@ -81,7 +81,16 @@
 			android:layout_marginLeft="10dp"
 			android:layout_marginRight="10dp"/> 
 			
-     
+     <Spinner
+        android:id="@+id/spinnerType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="54dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:entries="@array/type_arrays"
+        android:prompt="@string/type_prompt"
+        android:layout_below="@+id/imageView" />
 			
     <com.beardedhen.androidbootstrap.BootstrapButton
           		 android:id="@+id/uploadBtn"
@@ -90,7 +99,7 @@
                 android:layout_marginTop="54dp"
                 android:layout_marginLeft="60dp"
                 android:text="upload profile image"
-                android:layout_below="@+id/imageView"
+                android:layout_below="@+id/spinnerType"
                 bootstrapbutton:bb_icon_left="fa-sign-in"
                 bootstrapbutton:bb_roundedCorners="true"
                 bootstrapbutton:bb_type="primary" />

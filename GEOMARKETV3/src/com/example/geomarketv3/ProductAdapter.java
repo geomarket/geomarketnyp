@@ -49,7 +49,7 @@ public class ProductAdapter extends ArrayAdapter<Product> {
 		
 		txtTitle = (TextView) rowView.findViewById(R.id.productTitle);
 	
-		txtTitle.setText(resultArray.get(position).getName());
+		txtTitle.setText(resultArray.get(position).getName() + " $" + resultArray.get(position).getPrice());
 		txtTitle.setTextSize(25);
 		if(resultArray.get(position).getStatus().equals("active")){
 			rowView.setBackgroundColor(Color.LTGRAY);

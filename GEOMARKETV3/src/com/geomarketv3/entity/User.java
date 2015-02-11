@@ -9,7 +9,7 @@ public class User {
 	private String imgURL;
 	private Bitmap image;
 	private String id;
-	
+	private String type;
 	public User(){
 		
 	}
@@ -119,6 +119,14 @@ public class User {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 

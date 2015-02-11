@@ -66,6 +66,7 @@ public class Register_User extends AsyncTask<Object, Object, Object>{
 								createUser.put("name", user.getName());
 								createUser.put("role", user.getRole());
 								createUser.put("title", user.getTitle());
+								createUser.put("type", user.getType());
 								createuserref.updateChildren(createUser);
 								
 

@@ -49,6 +49,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -129,11 +130,16 @@ LocationListener{
     private NotificationManager notifyManager;
     private NotificationCompat.Builder notifyBuilder;
     private int MY_NOTIFICATION_ID = 1;
+    private ArrayList<Integer> typeList;
+    private int iconType;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_view_sales);
 		Firebase.setAndroidContext(this);
+		typeList = new ArrayList<Integer>();
+		typeList.add(R.drawable.food);
+		typeList.add(R.drawable.clothes);
 		mf = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
 		fl = (FrameLayout) findViewById(R.id.saleMemberFragment);
 		rl = (RelativeLayout) findViewById(R.id.rlView);
@@ -384,6 +390,7 @@ LocationListener{
 		final String userKey = data.getKey();
 		Map<String, Object> saleUserMaps = (Map<String, Object>) data.getValue();
 		if(saleUserMaps.get("role").equals("sales")){
+			String type = saleUserMaps.get("type").toString();
 			Map<String, Object> saleLocMaps = (Map<String, Object>) saleUserMaps.get("location");
 			if(saleLocMaps != null){
 				Date date = new Date();
@@ -404,7 +411,12 @@ LocationListener{
 							marker = gMap.addMarker(new MarkerOptions().position(latlng));
 							marker.setTitle(saleUserMaps.get("title").toString());
 							marker.setSnippet("sales on Date: " + saleDate);
-							
+							if(type.equals("food")){
+								iconType = typeList.get(0);
+							}else if(type.equals("clothes")){
+								iconType = typeList.get(1);
+							}
+							marker.setIcon(BitmapDescriptorFactory.fromResource(iconType));
 							marker.showInfoWindow();
 							markerList.add(marker);
 							UiGeofence = new SimpleGeofence(i + " has some offer faster find them!!", latlng.latitude, latlng.longitude, radius,Geofence.NEVER_EXPIRE, Geofence.GEOFENCE_TRANSITION_ENTER);
@@ -567,7 +579,7 @@ LocationListener{
 									marker = gMap.addMarker(new MarkerOptions().position(latlng));
 									marker.setTitle(UserMaps.get("title").toString());
 									marker.setSnippet("sales on Date: " + strdate);
-									
+									marker.setIcon(BitmapDescriptorFactory.fromResource(iconType));
 									marker.showInfoWindow();
 									markerList.add(marker);
 									

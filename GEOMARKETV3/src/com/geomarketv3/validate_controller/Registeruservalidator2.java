@@ -46,7 +46,7 @@ public void validateForm(Intent intent , Form mForm,ArrayList<Validate> validato
 			user.setRole(activity.getRole());
 			user.setImgURL(activity.getUriOfImage());
 			user.setTitle(activity.getTitle().toString());
-			
+			user.setType(activity.getSelectedType());
 			Register_User register = new Register_User(activity,user);
 			register.execute();
 		}else{
