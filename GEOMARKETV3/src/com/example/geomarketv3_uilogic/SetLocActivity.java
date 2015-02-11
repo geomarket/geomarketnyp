@@ -49,6 +49,8 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.app.Activity;
@@ -66,6 +68,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.Interpolator;
 import android.widget.DatePicker;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
@@ -129,6 +133,7 @@ LocationListener {
 						iconType = typeList.get(1);
 					}
 					Map<String, Object> locMaps = (Map<String, Object>) updateMaps.get("location");
+					if(locMaps != null){
 					for(String i: locMaps.keySet()){
 						Map<String, Object> updateMap = (Map<String, Object>) locMaps.get(i);
 						
@@ -145,6 +150,7 @@ LocationListener {
 							e.printStackTrace();
 						}
 					}
+				}
 				}
 			}
 			
@@ -224,7 +230,8 @@ LocationListener {
 							 				markerList.remove(i);
 							 			}
 							 		}
-							 		ref.addListenerForSingleValueEvent(new ValueEventListener(){
+							 		
+							 		ref.child("location").addListenerForSingleValueEvent(new ValueEventListener(){
 
 										@Override
 										public void onCancelled(
@@ -240,12 +247,17 @@ LocationListener {
 											
 											Map<String, Object> getMarkerMaps = (Map<String, Object>) arg0.getValue();
 											for(String i : getMarkerMaps.keySet()){
+												
 												Map<String, Object> getMarkerMap =  (Map<String, Object>) getMarkerMaps.get(i);
-													if(getMarkerMap.get("markertitle").toString().equals(marker.getTitle())){
-														String markerurl = url+"/location/"+ i;
-														rmref = new Firebase(markerurl);
-														rmref.removeValue();
-													}
+													if(getMarkerMap.get("markertitle").toString() != null){	
+														System.out.println(marker.getTitle());
+														if(getMarkerMap.get("markertitle").toString().equals(marker.getTitle())){
+															String markerurl = url+"/location/"+ i;
+															rmref = new Firebase(markerurl);
+															rmref.removeValue();
+															
+														}
+											}
 											}
 										}
 					 					
@@ -425,7 +437,8 @@ LocationListener {
 									selected_date = sdf.parse(date);
 									List<Address> address = geocoder.getFromLocation(latlng.latitude, latlng.longitude, 1);
 									marker = gMap.addMarker(new MarkerOptions().position(latlng).title("marker"+ (markerList.size()+1)+ " "+ date).snippet(address.get(0).getAddressLine(0) + " " + address.get(0).getAddressLine(1)).icon(BitmapDescriptorFactory.fromResource(iconType)));
-									marker.showInfoWindow();
+									
+									dropPinEffect(marker);
 									markerList.add(marker);
 									updateMap.put("lat", marker.getPosition().latitude);
 						        	updateMap.put("lng", marker.getPosition().longitude);
@@ -441,7 +454,7 @@ LocationListener {
 								
 								updateMap.put("date", epoch);
 								updateMap.put("markertitle", marker.getTitle());
-								ref.push().setValue(updateMap);
+								ref.child("location").push().setValue(updateMap);
 							}else{
 								Toast.makeText(getApplicationContext(), "Please check your day", Toast.LENGTH_SHORT).show();
 								marker.remove();
@@ -510,4 +523,31 @@ LocationListener {
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(SetLocActivity.this);
 		return pref.getString("userid", "null");
 	}
+	
+	private void dropPinEffect(final Marker marker) {
+        final Handler handler = new Handler();
+        final long start = SystemClock.uptimeMillis();
+        final long duration = 1500;
+
+        final Interpolator interpolator = new BounceInterpolator();
+
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                long elapsed = SystemClock.uptimeMillis() - start;
+                float t = Math.max(
+                        1 - interpolator.getInterpolation((float) elapsed
+                                / duration), 0);
+                marker.setAnchor(0.5f, 1.0f + 14 * t);
+
+                if (t > 0.0) {
+                    // Post again 15ms later.
+                    handler.postDelayed(this, 15);
+                } else {
+                    marker.showInfoWindow();
+
+                }
+            }
+        });
+    }
 }
