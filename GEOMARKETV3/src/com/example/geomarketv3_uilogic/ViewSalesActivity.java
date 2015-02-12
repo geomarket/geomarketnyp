@@ -138,7 +138,7 @@ LocationListener{
 		setContentView(R.layout.activity_view_sales);
 		Firebase.setAndroidContext(this);
 		typeList = new ArrayList<Integer>();
-		typeList.add(R.drawable.food);
+		typeList.add(R.drawable.icecream);
 		typeList.add(R.drawable.clothes);
 		mf = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
 		fl = (FrameLayout) findViewById(R.id.saleMemberFragment);
@@ -411,7 +411,7 @@ LocationListener{
 							marker = gMap.addMarker(new MarkerOptions().position(latlng));
 							marker.setTitle(saleUserMaps.get("title").toString());
 							marker.setSnippet("sales on Date: " + saleDate);
-							if(type.equals("food")){
+							if(type.equals("ice cream")){
 								iconType = typeList.get(0);
 							}else if(type.equals("clothes")){
 								iconType = typeList.get(1);

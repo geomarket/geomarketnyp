@@ -104,7 +104,7 @@ LocationListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_set_loc);
 		typeList = new ArrayList<Integer>();
-		typeList.add(R.drawable.food);
+		typeList.add(R.drawable.icecream);
 		typeList.add(R.drawable.clothes);
 		userid = getSharedPrefernces();
 		url = "https://mmarketnyp.firebaseio.com/user/" + userid;
@@ -127,7 +127,7 @@ LocationListener {
 				if(snapshot.getValue() != null){
 					Map<String, Object> updateMaps = (Map<String, Object>) snapshot.getValue();
 					System.out.println(updateMaps.get("type"));
-					if(updateMaps.get("type").toString().equals("food")){
+					if(updateMaps.get("type").toString().equals("ice cream")){
 						iconType = typeList.get(0);
 					}else if (updateMaps.get("type").toString().equals("clothes")){
 						iconType = typeList.get(1);
@@ -241,8 +241,7 @@ LocationListener {
 										}
 
 										@Override
-										public void onDataChange(
-												DataSnapshot arg0) {
+										public void onDataChange(DataSnapshot arg0) {
 											// TODO Auto-generated method stub
 											
 											Map<String, Object> getMarkerMaps = (Map<String, Object>) arg0.getValue();
